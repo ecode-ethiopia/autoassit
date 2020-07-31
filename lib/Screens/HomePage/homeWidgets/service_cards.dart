@@ -2,8 +2,8 @@ import 'package:autoassit/Screens/Vehicle/pre_vehi_list.dart';
 import 'package:flutter/material.dart';
 
 class ServicesList extends StatefulWidget {
-  final username;
-  ServicesList({Key key, this.username}) : super(key: key);
+
+  ServicesList({Key key}) : super(key: key);
 
   @override
   _ServicesListState createState() => _ServicesListState();
@@ -35,9 +35,7 @@ class _ServicesListState extends State<ServicesList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PreVehicleList(
-                      username: widget.username,
-                    ),
+                    builder: (context) => PreVehicleList(),
                   ),
                 );
               }),

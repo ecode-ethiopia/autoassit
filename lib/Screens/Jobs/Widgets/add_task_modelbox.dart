@@ -33,14 +33,14 @@ class _AddTaskModelState extends State<AddTaskModel> {
     GetServicesController.getServices().then((servicesFromServer) {
       setState(() {
         _filteredService = servicesFromServer;
-        print("fetched");
+        print("services fetched");
       });
     });
 
     GetProductController.getProducts().then((proFromServer) {
       setState(() {
         _filteredProduct = proFromServer;
-        print("fetched");
+        print("products fetched");
       });
     });
   }
@@ -61,7 +61,7 @@ class _AddTaskModelState extends State<AddTaskModel> {
             height: 24,
           ),
           DropdownButton<Service>(
-            hint: Text("  Select Ref"),
+            hint: Text("  Select a Service"),
             value: _selectedService,
             onChanged: (Service value) {
               setState(() {

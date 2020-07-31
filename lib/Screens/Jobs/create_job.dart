@@ -1,20 +1,22 @@
+import 'package:autoassit/Models/userModel.dart';
+import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/addTask_page.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/add_task_modelbox.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/change_task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'additems.dart';
 
 class CreateJob extends StatefulWidget {
-  final username;
   final vnumber;
   final vehicle_name;
   final customer_name;
   final cusId;
   CreateJob(
       {Key key,
-      this.username,
       this.vnumber,
       this.vehicle_name,
       this.customer_name,this.cusId})
@@ -26,14 +28,26 @@ class CreateJob extends StatefulWidget {
 
 class _CreateJobState extends State<CreateJob> {
   String currentDate;
+ int jobno = 1;
+ UserModel userModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    setJobNo();
     currentDate = Utils.getDate();
     print(currentDate);
+    userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
+  }
+
+  setJobNo() async {
+    SharedPreferences job = await SharedPreferences.getInstance();
+    setState(() {
+      jobno = job.getInt("jobno")!= null ? job.getInt("jobno"): 1 ;
+    });
+    
+    print(jobno.toString());
   }
 
   @override
@@ -49,17 +63,22 @@ class _CreateJobState extends State<CreateJob> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFef5350),
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => AddItemsPage()));
-          //  showDialog(
-          //     barrierDismissible: false,
-          //     context: context,
-          //     builder: (BuildContext context) {
-          //       return Dialog(
-          //           child: AddTaskModel(),
-          //           shape: RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.all(Radius.circular(12))));
-          //     });
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) => AddItemsPage()));
+           showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                    child: AddTasksModel(
+                      vnumber: widget.vnumber,
+                      vehicle_name: widget.vehicle_name,
+                      cusId: widget.cusId,
+                      customer_name: widget.customer_name,
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12))));
+              });
         },
         child: Icon(Icons.add),
       ),
@@ -80,19 +99,27 @@ class _CreateJobState extends State<CreateJob> {
           padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0),
           child: _buttons(),
         ),
-        Expanded(child: AddJobTaskPage())
+        Expanded(child: Center(
+          child: Text("No Taks Added yet",
+          style: TextStyle(
+            fontSize: 30
+          ),),
+        )
+        // AddJobTaskPage()
+        )
       ],
     );
   }
 
   Widget _jobDetails() {
+    print("jobno is"+jobno.toString());
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Job NO 1",
+            "Job NO ${jobno.toString()}",
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
@@ -103,7 +130,7 @@ class _CreateJobState extends State<CreateJob> {
           _buildFields('Vehicle No - ' + widget.vnumber),
           _buildFields('Vehicle Name - ' + widget.vehicle_name),
           _buildFields('Customer Name - ' + widget.customer_name),
-          _buildFields('Supervisor Name - ' + widget.username),
+          _buildFields('Supervisor Name - ${userModel.userName}'),
         ],
       ),
     );

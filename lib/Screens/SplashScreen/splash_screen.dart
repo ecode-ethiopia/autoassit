@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:autoassit/Screens/Login/login_page.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Duration(seconds: 5),
       () {
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(
-          username: _usrename,
-        ),
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(),
         ),
         );
       },

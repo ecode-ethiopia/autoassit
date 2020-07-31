@@ -8,8 +8,7 @@ import 'package:autoassit/Controllers/ApiServices/Vehicle_Services/getVehicles_S
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewVehicle extends StatefulWidget {
-  final username;
-  ViewVehicle({Key key,this.username}) : super(key: key);
+  ViewVehicle({Key key}) : super(key: key);
 
   @override
   _ViewVehicleState createState() => _ViewVehicleState();
@@ -320,7 +319,6 @@ class _ViewVehicleState extends State<ViewVehicle> {
                             print("clicked on history btn");
                             Navigator.of(context).push(MaterialPageRoute(
                builder: (context) => CreateJob(
-                                       username: widget.username,
                                        vnumber: filteredVehicles[index].vNumber,
                                        vehicle_name: filteredVehicles[index].make +" "+ filteredVehicles[index].model,
                                        customer_name: filteredVehicles[index].cusName,
@@ -434,12 +432,17 @@ class _ViewVehicleState extends State<ViewVehicle> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Text(data,
-                style: TextStyle(
-                    color: Color(0xFF2e282a),
-                    fontFamily: 'OpenSans',
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600)),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width /3,
+                          child: Text(data,
+                  style: TextStyle(
+                      color: Color(0xFF2e282a),
+                      fontFamily: 'OpenSans',
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600),
+                      softWrap: true,
+                      ),
+            ),
           ),
         ],
       ),

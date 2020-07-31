@@ -1,3 +1,4 @@
+import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Screens/Customer/add_customer.dart';
 import 'package:autoassit/Screens/Customer/pre_cus_list.dart';
 import 'package:autoassit/Screens/Customer/view_customer.dart';
@@ -10,9 +11,15 @@ import 'package:autoassit/Screens/Troublelogin/forgotPassword.dart';
 import 'package:autoassit/Screens/Vehicle/addVehicle.dart';
 import 'package:autoassit/Screens/Vehicle/view_vehicle.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 void main(){
-  runApp(new MyApp());
+  runApp(OverlaySupport(child: MultiProvider(providers: [
+      ChangeNotifierProvider(
+        create: (_) => AuthProvider(),
+      ),
+    ],child: MyApp())));
 }
 
 class MyApp extends StatelessWidget {

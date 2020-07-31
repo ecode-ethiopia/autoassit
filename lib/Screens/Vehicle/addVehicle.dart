@@ -259,8 +259,8 @@ class _AddVehicleState extends State<AddVehicle> {
         animType: AnimType.TOPSLIDE,
         tittle: title,
         desc: dec,
-        btnOkText: 'Goto VehicleList !',
-        btnCancelText: 'Regsiter Another !',
+        btnOkText: 'VehicleList !',
+        btnCancelText: 'Regsiter !',
         btnCancelOnPress: () {},
         btnOkOnPress: () {
           Navigator.of(context)

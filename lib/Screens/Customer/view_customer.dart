@@ -8,6 +8,8 @@ import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/getCustomers_Service.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:autoassit/Utils/dialogs.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class ViewCustomer extends StatefulWidget {
   ViewCustomer({Key key}) : super(key: key);
@@ -530,6 +532,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
               child: FlatButton(
                 onPressed: () {
                   print("clicked delete btn");
+                successDialog("success", "Customer removed");
                 },
                 child: Text(
                   "Delete Customer",
@@ -543,5 +546,22 @@ class _ViewCustomerState extends State<ViewCustomer> {
         ),
       );
     });
+  }
+
+  Future<dynamic> successDialog(String title, String dec) {
+    return AwesomeDialog(
+            context: context,
+            dialogType: DialogType.SUCCES,
+            animType: AnimType.TOPSLIDE,
+            tittle: title,
+            desc: dec,
+            // btnCancelOnPress: () {},
+            btnOkOnPress: () {
+                 Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ViewCustomer(
+                                        
+                                      )));
+            })
+        .show();
   }
 }

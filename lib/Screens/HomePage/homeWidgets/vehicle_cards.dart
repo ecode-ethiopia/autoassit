@@ -2,8 +2,7 @@ import 'package:autoassit/Screens/Vehicle/view_vehicle.dart';
 import 'package:flutter/material.dart';
 
 class VehicleCards extends StatefulWidget {
-  final username;
-  VehicleCards({Key key,this.username}) : super(key: key);
+  VehicleCards({Key key}) : super(key: key);
 
   @override
   _VehicleCardsState createState() => _VehicleCardsState();
@@ -35,9 +34,7 @@ class _VehicleCardsState extends State<VehicleCards> {
               getVehicleCard('assets/images/add_vehi.png','   Add\nVehicle', onTap: (){Navigator.of(context).pushNamed("/preCusList");} ),
               SizedBox(width: 15.0),
               getVehicleCard('assets/images/view.png', '   View\nVehicles', onTap: (){Navigator.of(context).push(MaterialPageRoute(
-             builder: (context) => ViewVehicle(
-                                     username: widget.username,
-                                     )));}),
+             builder: (context) => ViewVehicle()));}),
               SizedBox(width: 15.0),
               getVehicleCard('assets/images/vehi_history.png', 'Vehicles\nHistory', onTap: (){print("Go to vehicles history screen !");}),
               SizedBox(width: 15.0),

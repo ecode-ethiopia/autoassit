@@ -5,15 +5,25 @@ import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:autoassit/Controllers/ApiServices/Job_services/create_job_service.dart';
 
-class AddItemsPage extends StatefulWidget {
-  AddItemsPage({Key key}) : super(key: key);
+class AddTasksModel extends StatefulWidget {
+  final username;
+  final vnumber;
+  final vehicle_name;
+  final customer_name;
+  final cusId;
+  AddTasksModel({Key key, this.username,
+      this.vnumber,
+      this.vehicle_name,
+      this.customer_name,this.cusId}) : super(key: key);
 
   @override
-  _AddItemsPageState createState() => _AddItemsPageState();
+  _AddTasksModelState createState() => _AddTasksModelState();
 }
 
-class _AddItemsPageState extends State<AddItemsPage> {
+class _AddTasksModelState extends State<AddTasksModel> {
   List<Service> selectedServices = [];
   List<Service> selectedProducts = [];
 
@@ -33,6 +43,11 @@ class _AddItemsPageState extends State<AddItemsPage> {
 
   final quantityController = TextEditingController();
 
+  SharedPreferences login;
+
+  int jobno = 1;
+  int jobval;
+
   @override
   void initState() {
     super.initState();
@@ -51,31 +66,30 @@ class _AddItemsPageState extends State<AddItemsPage> {
     });
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false, // this avoids the overflow error
-        resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
+    return Container(
+      child: SingleChildScrollView(
               child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top:25.0),
+                padding: const EdgeInsets.only(top:10.0),
                 child: Center(
                     child: Text(
                   "Add new Job task",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 )),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height / 65,
+              // ),
               Container(
                 width: MediaQuery.of(context).size.width / 1.2,
-                height: 15,
                 margin: EdgeInsets.only(top: 32),
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: Text(
@@ -87,7 +101,7 @@ class _AddItemsPageState extends State<AddItemsPage> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height / 70,
               ),
               Container(
                 decoration: BoxDecoration(
@@ -99,10 +113,21 @@ class _AddItemsPageState extends State<AddItemsPage> {
                   hint: Text("  Select Service",),
                   value: _selectedService,
                   onChanged: (Service value) {
+                    serviceIndexes.clear();
                     setState(() {
                       _selectedService = value;
                       // selectedServices.add(_selectedService);
                     });
+
+                    final saleitm = {
+                      "serviceName": _selectedService.serviceName,
+                      "serviceCost": _selectedService.price
+                    };
+                    serviceIndexes.add(saleitm);
+
+                    print("--------services-------");
+                    print(serviceIndexes);
+                    print("--------services-------");
                   },
                   items: _filteredService.map((Service val) {
                     return DropdownMenuItem<Service>(
@@ -122,36 +147,35 @@ class _AddItemsPageState extends State<AddItemsPage> {
               SizedBox(
                 height: 30,
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color:Color(0xFFef5350),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                width: MediaQuery.of(context).size.width / 2.5,
-                child: InkWell(
-                  onTap: () {
-                    final saleitm = {
-                      "serviceName": _selectedService.serviceName,
-                      "serviceCost": _selectedService.price
-                    };
-                    serviceIndexes.add(saleitm);
-                    print("--------services-------");
-                    print(serviceIndexes);
-                    print("--------services-------");
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[Text("Save Service", style: TextStyle(color:Colors.white))],
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 24,
-              ),
+              // Container(
+              //   padding: EdgeInsets.all(10),
+              //   decoration: BoxDecoration(
+              //     color:Color(0xFFef5350),
+              //     borderRadius: BorderRadius.circular(12),
+              //   ),
+              //   width: MediaQuery.of(context).size.width / 2.5,
+              //   child: InkWell(
+              //     onTap: () {
+              //       final saleitm = {
+              //         "serviceName": _selectedService.serviceName,
+              //         "serviceCost": _selectedService.price
+              //       };
+              //       serviceIndexes.add(saleitm);
+              //       print("--------services-------");
+              //       print(serviceIndexes);
+              //       print("--------services-------");
+              //     },
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: <Widget>[Text("Save Service", style: TextStyle(color:Colors.white))],
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 24,
+              // ),
               Container(
                 width: MediaQuery.of(context).size.width / 1.2,
-                height: 15,
                 // margin: EdgeInsets.only(top: 32),
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: Text(
@@ -195,12 +219,12 @@ class _AddItemsPageState extends State<AddItemsPage> {
                   }).toList(),
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              // SizedBox(
+              //   height: 30,
+              // ),
               Container(
-                width: MediaQuery.of(context).size.width / 1.5,
-                height: MediaQuery.of(context).size.height / 14,
+                // width: MediaQuery.of(context).size.width / 1.5,
+                // height: MediaQuery.of(context).size.height / 14,
                 child: TextFormField(
                   controller: quantityController,
                   decoration: new InputDecoration(
@@ -250,21 +274,38 @@ class _AddItemsPageState extends State<AddItemsPage> {
                 height: 34,
               ),
               InkWell(
-                  onTap: () {
+                  onTap: () async {
+                    SharedPreferences job = await SharedPreferences.getInstance();
+                    int jobnumber = job.getInt("jobno")!= null ? job.getInt("jobno"): 1 ;
                     final body = {
-                      // "services": serviceIndexes,
-                      // "products": prodIndexes,
-                      // "date": DateTime.now(),
-                      // "vnumber": "cscsd",
-                      // "vName": "csdc",
-                      // "cusId": "csds",
-                      // "cusName": "csdcsd",
-                      // "total": "csdcsd",
-                      // "status": "csdcsd"
-                      Dialogs.successDialog(context, "Done", "Job Created Successfully !")
+                      "services": serviceIndexes,
+                      "products": prodIndexes,
+                      "date": DateTime.now().toString(),
+                      "vnumber": widget.vnumber,
+                      "vName": widget.vehicle_name,
+                      "cusId": widget.cusId,
+                      "cusName": widget.customer_name,
+                      "total": "123244",
+                      "status": "not started",
+                      "jobNo": jobnumber.toString()
                     };
+                    CreateJobService.createJob(body).then((success) async {
+                        print(success);
+                        final _result = success;
+                        if (_result == "success") {
+                          // clearcontrollers();
+                          jobval = jobno + 1;
+                          SharedPreferences job = await SharedPreferences.getInstance();
+                          job.setInt("jobno", jobval);
+                          print(jobval.toString());
 
-                    print(body);
+                          Dialogs.successDialog(context, "Done", "Job Created Successfully !");
+                        } else {
+                          Dialogs.errorDialog(context, _result, "Something went wrong !");
+                        }
+                      });
+                     
+                    // print(body);
                   },
                   child: Container(
         height: 45,

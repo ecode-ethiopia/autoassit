@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:autoassit/Models/userModel.dart';
+import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/project_card_tile.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/service_cards.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/vehicle_cards.dart';
@@ -10,11 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/customer_cards.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  final username;
-  HomePage({Key key, this.title,this.username}) : super(key: key);
+  HomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -27,14 +29,14 @@ class _HomePageState extends State<HomePage>
   TabController tabController;
   String welcome_msg;
   String username;
+  UserModel userModel;
 
   @override
   Future<void> initState() {
     // TODO: implement initState
     tabController = TabController(vsync: this, length: 4);
     welcome_msg = Utils.getWelcomeMessage();
-
-    print(widget.username);
+    userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
 
     super.initState();
   }
@@ -185,8 +187,8 @@ class _HomePageState extends State<HomePage>
                 controller: tabController,
                 children: <Widget>[
                   CustomerList(),
-                  VehicleCards(username: widget.username),
-                  ServicesList(username: widget.username),
+                  VehicleCards(),
+                  ServicesList(),
                   CustomerList(),
                 ],
               );
@@ -210,14 +212,7 @@ class _HomePageState extends State<HomePage>
       initiallyExpanded: true,
       children: <Widget>[
         Container(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ProjectCardTile();
-                  },
-                ),
+                child: ProjectCardTile(),
               )
       ],
     );
@@ -232,7 +227,7 @@ class _HomePageState extends State<HomePage>
       margin: const EdgeInsets.only(left: 20.0),
       padding: const EdgeInsets.all(5.0),
       child: Text(
-        welcome_msg+ "\n"+ widget.username,
+        "$welcome_msg"+ "\n"+ "${userModel.userName}",
         style: TextStyle(
             fontFamily: 'Montserrat',
             fontSize: 15.0,

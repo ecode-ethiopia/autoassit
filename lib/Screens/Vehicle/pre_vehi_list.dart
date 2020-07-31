@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:autoassit/Controllers/ApiServices/vehicle_services/getVehicles_service.dart';
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
@@ -7,8 +6,7 @@ import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 
 class PreVehicleList extends StatefulWidget {
-  final username;
-  PreVehicleList({Key key,this.username}) : super(key: key);
+  PreVehicleList({Key key}) : super(key: key);
 
   @override
   _PreVehicleListState createState() => _PreVehicleListState();
@@ -258,7 +256,6 @@ class _PreVehicleListState extends State<PreVehicleList> {
 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => CreateJob(
-                                     username: widget.username,
                                      vnumber: vnumber,
                                      vehicle_name: vehicle_name,
                                      customer_name: customer_name,
