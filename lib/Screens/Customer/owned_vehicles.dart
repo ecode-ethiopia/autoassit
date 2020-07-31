@@ -34,7 +34,11 @@ class _OwnedVehiclesState extends State<OwnedVehicles> {
 
   getCusVehicles() async {
     SharedPreferences ownedVehi = await SharedPreferences.getInstance();
-    final body = {"cusID": ownedVehi.getString("cusId")};
+    SharedPreferences initializeToken = await SharedPreferences.getInstance();
+    final body = {
+      "cusID": ownedVehi.getString("cusId"),
+      "token": initializeToken.getString("authtoken")
+      };
 
     GetCustomerVehicles.getVehicles(body).then((vehiclesfromserver){
          setState(() {

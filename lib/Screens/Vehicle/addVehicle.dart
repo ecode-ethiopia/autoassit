@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:autoassit/Controllers/ApiServices/Vehicle_Services/addVehicle_Service.dart';
+import 'package:autoassit/Models/userModel.dart';
+import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Screens/Vehicle/view_vehicle.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:provider/provider.dart';
 
 class AddVehicle extends StatefulWidget {
   final customer_id;
@@ -22,17 +26,36 @@ class _AddVehicleState extends State<AddVehicle> {
   final _vODO = TextEditingController();
   final _vDescription = TextEditingController();
 
+  UserModel userModel;
+  ProgressDialog pr;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
     print("customer id = " + widget.customer_id);
     print("customer name = " + widget.customer_name);
   }
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'Saving Info...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/loading2.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return Scaffold(
         resizeToAvoidBottomPadding: false, // this avoids the overflow error
         resizeToAvoidBottomInset: true,
@@ -269,6 +292,7 @@ class _AddVehicleState extends State<AddVehicle> {
   }
 
   postVehicleData() {
+    pr.show();
     final body = {
       "vnumber": _vNumber.text,
       "make": _vMake.text,
@@ -278,15 +302,20 @@ class _AddVehicleState extends State<AddVehicle> {
       "capacity": _vCapacity.text,
       "description": _vDescription.text,
       "cusID": widget.customer_id,
-      "cusName": widget.customer_name
+      "cusName": widget.customer_name,
+      "garageId": userModel.garageId,
+      "garageName": userModel.garageName,
+      "supervisorName": userModel.userName,
     };
     RegisterVehicleService.RegisterVehicle(body).then((success) {
       print(success);
       final _result = success;
       if (_result == "success") {
+        pr.hide();
         clearcontrollers();
         successDialog('Vehicle Registration successfull', 'Click Ok to see !');
       } else {
+        pr.hide();
         errorDialog('ERROR', _result);
       }
     });
