@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/addCustomer_Service.dart';
+import 'package:autoassit/Models/userModel.dart';
+import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:provider/provider.dart';
 
 class AddCustomer extends StatefulWidget {
   AddCustomer({Key key}) : super(key: key);
@@ -26,11 +30,14 @@ class _AddCustomerState extends State<AddCustomer> {
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   String _currentRole;
   String _errorTxt = '';
+  UserModel userModel;
+  ProgressDialog pr;
 
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentRole = _dropDownMenuItems[0].value;
+    userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
     super.initState();
   }
 
@@ -44,6 +51,22 @@ class _AddCustomerState extends State<AddCustomer> {
 
   @override
   Widget build(BuildContext context) {
+     pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'Saving Info...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/loading2.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+        
     return Scaffold(
         resizeToAvoidBottomPadding: false, // this avoids the overflow error
         resizeToAvoidBottomInset: true,
@@ -501,6 +524,7 @@ class _AddCustomerState extends State<AddCustomer> {
   }
 
   postUserData() {
+    pr.show();
     final body = {
       "fname": _fname.text,
       "lname": _lname.text,
@@ -512,14 +536,19 @@ class _AddCustomerState extends State<AddCustomer> {
       "ad_l1": _p_code.text,
       "ad_l2": _street.text,
       "ad_l3": _city.text,
+      "garageId": userModel.garageId,
+      "garageName": userModel.garageName,
+      "supervisorName": userModel.userName,
     };
     RegisterCustomerService.RegisterCustomer(body).then((success) {
       print(success);
       final _result = success;
       if (_result == "success") {
+        pr.hide();
         clearcontrollers();
         successDialog('Customer Registration successfull', 'Click Ok to see !');
       } else {
+        pr.hide();
         errorDialog('ERROR', _result);
       }
     });
