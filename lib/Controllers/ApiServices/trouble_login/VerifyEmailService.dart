@@ -5,6 +5,7 @@ import 'package:autoassit/Models/userModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VerifyEmailService {
   static Future<bool> VerifyEmail(body,context) async {
@@ -27,6 +28,8 @@ class VerifyEmailService {
       UserModel myModel = UserModel.fromJson(res_data);
       //make my model usable to all widgets
       Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
+      SharedPreferences login = await SharedPreferences.getInstance();
+      login.setString("authtoken", myModel.token);
       return true;
     } else {
       return false;

@@ -412,6 +412,7 @@ class _LoginPageState extends State<LoginPage> {
       print(success);
       if (success) {
         SharedPreferences login = await SharedPreferences.getInstance();
+        login.setString("phonenum", phonenum);
         final _token = login.getString("gettoken");
         final _usrename = login.getString("username");
         userModel = Provider.of<AuthProvider>(context, listen: false).userModel;

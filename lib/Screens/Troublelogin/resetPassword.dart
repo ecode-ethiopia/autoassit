@@ -161,6 +161,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           };
 
                           VerifyEmailService.VerifyEmail(body,context).then((success) {
+                            print("result is $success");
                             if (success) {
                               log('account verified');
 
