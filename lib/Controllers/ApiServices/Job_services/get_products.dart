@@ -3,13 +3,22 @@ import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/productModel.dart';
 import 'package:autoassit/Models/servicesModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GetProductController {
   static const String url = '${URLS.BASE_URL}/proser/getProducts';
 
   static Future<List<Service>> getProducts() async {
+    SharedPreferences initializeToken = await SharedPreferences.getInstance();
+
+    final body = {
+        "token": initializeToken.getString("authtoken")
+      };
+
+      Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+      
     try {
-      final response = await http.get(url);
+      final response = await http.post(url, body: jsonEncode(body), headers: requestHeaders);
       if (response.statusCode == 200) {
         List<Service> list = parseProducts(response.body);
         return list;
