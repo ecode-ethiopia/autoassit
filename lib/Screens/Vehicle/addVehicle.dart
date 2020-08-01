@@ -7,6 +7,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddVehicle extends StatefulWidget {
   final customer_id;
@@ -291,8 +292,9 @@ class _AddVehicleState extends State<AddVehicle> {
         }).show();
   }
 
-  postVehicleData() {
+  postVehicleData() async {
     pr.show();
+    SharedPreferences initializeToken = await SharedPreferences.getInstance();
     final body = {
       "vnumber": _vNumber.text,
       "make": _vMake.text,
@@ -303,9 +305,7 @@ class _AddVehicleState extends State<AddVehicle> {
       "description": _vDescription.text,
       "cusID": widget.customer_id,
       "cusName": widget.customer_name,
-      "garageId": userModel.garageId,
-      "garageName": userModel.garageName,
-      "supervisorName": userModel.userName,
+      "token": initializeToken.getString("authtoken")
     };
     RegisterVehicleService.RegisterVehicle(body).then((success) {
       print(success);
