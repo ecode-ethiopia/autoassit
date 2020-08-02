@@ -83,7 +83,7 @@ class _ShowJobState extends State<ShowJob> {
                           height: MediaQuery.of(context).size.height / 1.2,
                           child: ListView.builder(
                             padding: const EdgeInsets.all(0),
-                            itemCount: job[index].serviceData.length,
+                            // itemCount: job[index].serviceData.length,
                             itemBuilder: (context, index2) {
                               return Padding(
                                 padding: const EdgeInsets.only(
@@ -145,11 +145,11 @@ class _ShowJobState extends State<ShowJob> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: <Widget>[
-                                                Text(job[index].serviceData[index2].serviceName),
+                                                // Text(job[index].serviceData[index2].serviceName),
                                                 SizedBox(
                                                   height: 12,
                                                 ),
-                                                Text(job[index].productData[index2].productName),
+                                                // Text(job[index].productData[index2].productName),
                                               ]),
                                         ),
                                       ),

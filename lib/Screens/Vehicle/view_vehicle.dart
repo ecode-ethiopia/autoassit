@@ -315,8 +315,27 @@ class _ViewVehicleState extends State<ViewVehicle> {
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
                           child: FlatButton(
-                          onPressed: () {
+                          onPressed: () async {
                             print("clicked on history btn");
+                            int jobno = 0;
+                            SharedPreferences job = await SharedPreferences.getInstance();
+                              print(job.getString("jobno"));
+                              
+                              if(job.getString("jobno") == null){
+                                setState(() {
+                                  jobno++;
+                                });
+                                job.setString("jobno", jobno.toString());
+                                print("job no $jobno");
+                              }else{
+                                print("eka his na oi");
+                                setState(() {
+                                  jobno = int.parse(job.getString("jobno"));
+                                  jobno++;
+                                });
+                                job.setString("jobno", jobno.toString());
+                                print("job no $jobno");
+                              }
                             Navigator.of(context).push(MaterialPageRoute(
                builder: (context) => CreateJob(
                                        vnumber: filteredVehicles[index].vNumber,

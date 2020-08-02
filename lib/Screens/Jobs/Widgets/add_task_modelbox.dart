@@ -4,7 +4,6 @@ import 'package:autoassit/Models/servicesModel.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:flutter/material.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class AddTaskModel extends StatefulWidget {
   AddTaskModel({Key key}) : super(key: key);

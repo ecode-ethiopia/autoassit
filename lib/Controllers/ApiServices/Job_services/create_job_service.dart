@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
+import 'package:autoassit/Models/jobModel.dart';
+import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class CreateJobService {
-  static Future<String> createJob(body) async {
+  static Future<bool> createJob(body,context) async {
 
     print(body);
 
@@ -22,18 +25,24 @@ class CreateJobService {
     Map<String, dynamic> res_data = jsonDecode(data);
     log(res_data.toString());
 
-    if (res_data['status'] == 'success') {
+    try{
+       if (response.statusCode == 200) {
 
-      final result = res_data['status'];
+         Job model = Job.fromJson(res_data);
+         Provider.of<JobProvider>(context, listen: false).jobModel = model;
       
-      return result;
+      return true;
     } 
     else 
     {
       
-      final result = res_data['error'];
+      final result = res_data['messege'];
       print(result);
-      return result;
+      return false;
+    }
+    }
+    catch(e){
+      print(e);
     }
     // return true;
   }

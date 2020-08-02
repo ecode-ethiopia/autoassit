@@ -4,7 +4,6 @@ import 'package:autoassit/Models/servicesModel.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:flutter/material.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:autoassit/Controllers/ApiServices/Job_services/create_job_service.dart';
 
@@ -289,19 +288,19 @@ class _AddTasksModelState extends State<AddTasksModel> {
                       "status": "not started",
                       "jobNo": jobnumber.toString()
                     };
-                    CreateJobService.createJob(body).then((success) async {
+                    CreateJobService.createJob(body,context).then((success) async {
                         print(success);
                         final _result = success;
-                        if (_result == "success") {
+                        if (_result) {
                           // clearcontrollers();
                           jobval = jobno + 1;
                           SharedPreferences job = await SharedPreferences.getInstance();
                           job.setInt("jobno", jobval);
                           print(jobval.toString());
 
-                          Dialogs.successDialog(context, "Done", "Job Created Successfully !");
+                          // Dialogs.successDialog(context, "Done", "Job Created Successfully !");
                         } else {
-                          Dialogs.errorDialog(context, _result, "Something went wrong !");
+                          // Dialogs.errorDialog(context, "F", "Something went wrong !");
                         }
                       });
                      

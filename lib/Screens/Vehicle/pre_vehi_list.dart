@@ -4,6 +4,7 @@ import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
 import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PreVehicleList extends StatefulWidget {
   PreVehicleList({Key key}) : super(key: key);
@@ -245,14 +246,32 @@ class _PreVehicleListState extends State<PreVehicleList> {
     );
   }
 
-  _navigateToJobScreen(index) {
+  _navigateToJobScreen(index) async {
 
     final vnumber = filteredVehicles[index].vNumber;
     final vehicle_name = filteredVehicles[index].make +" "+ filteredVehicles[index].model;
     final customer_name = filteredVehicles[index].cusName;
     final cusId = filteredVehicles[index].cusid;
-
-    print(vehicle_name +"\n"+ vnumber);
+    int jobno = 0;
+    print(vehicle_name +"\n"+ vnumber +"\n"+ customer_name +"\n"+ cusId +"\n"+ "huttoooo");
+    SharedPreferences job = await SharedPreferences.getInstance();
+    print(job.getString("jobno"));
+    
+    if(job.getString("jobno") == null){
+      setState(() {
+        jobno++;
+      });
+      job.setString("jobno", jobno.toString());
+      print("job no $jobno");
+    }else{
+      print("eka his na oi");
+      setState(() {
+        jobno = int.parse(job.getString("jobno"));
+        jobno++;
+      });
+      job.setString("jobno", jobno.toString());
+       print("job no $jobno");
+    }
 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => CreateJob(

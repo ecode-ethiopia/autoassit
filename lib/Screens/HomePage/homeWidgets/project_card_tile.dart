@@ -111,7 +111,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            job[index].productData.length.toString() + "Tasks",
+                             "0 Tasks",
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey,
