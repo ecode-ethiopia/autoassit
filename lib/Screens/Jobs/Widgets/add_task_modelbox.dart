@@ -1,5 +1,6 @@
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_products.dart';
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_services.dart';
+import 'package:autoassit/Models/productModel.dart';
 import 'package:autoassit/Models/servicesModel.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Utils/dialogs.dart';
@@ -22,7 +23,7 @@ class _AddTaskModelState extends State<AddTaskModel> {
   List<Service> _filteredService = List();
 
   List<Service> _product = List();
-  List<Service> _filteredProduct = List();
+  List<Product> _filteredProduct = List();
 
   Service _selectedProd;
 

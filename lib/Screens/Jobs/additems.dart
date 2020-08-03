@@ -1,5 +1,6 @@
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_products.dart';
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_services.dart';
+import 'package:autoassit/Models/productModel.dart';
 import 'package:autoassit/Models/servicesModel.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Utils/dialogs.dart';
@@ -23,8 +24,8 @@ class AddTasksModel extends StatefulWidget {
 }
 
 class _AddTasksModelState extends State<AddTasksModel> {
-  List<Service> selectedServices = [];
-  List<Service> selectedProducts = [];
+  // List<Service> selectedServices = [];
+  // List<Service> selectedProducts = [];
 
   Service _selectedService;
 
@@ -33,10 +34,10 @@ class _AddTasksModelState extends State<AddTasksModel> {
 
   List serviceIndexes = [];
 
-  List<Service> _product = List();
-  List<Service> _filteredProduct = List();
+  List<Product> _product = List();
+  List<Product> _filteredProduct = List();
 
-  Service _selectedProd;
+  Product _selectedProd;
 
   List prodIndexes = [];
 
@@ -65,7 +66,6 @@ class _AddTasksModelState extends State<AddTasksModel> {
     });
   }
 
-  
 
   @override
   Widget build(BuildContext context) {
@@ -194,22 +194,22 @@ class _AddTasksModelState extends State<AddTasksModel> {
                   color: Colors.amber,
                   borderRadius: BorderRadius.circular(12)
                 ),
-                child: DropdownButton<Service>(
+                child: DropdownButton<Product>(
                   hint: Text("  Select Product",),
                   value: _selectedProd,
-                  onChanged: (Service value) {
+                  onChanged: (Product value) {
                     setState(() {
                       _selectedProd = value;
                       // selectedServices.add(_selectedService);
                     });
                   },
-                  items: _filteredProduct.map((Service prod) {
-                    return DropdownMenuItem<Service>(
+                  items: _filteredProduct.map((Product prod) {
+                    return DropdownMenuItem<Product>(
                       value: prod,
                       child: Row(
                         children: <Widget>[
                           Text(
-                            "  " + prod.serviceName,
+                            "  " + prod.productName,
                             style: TextStyle(color: Colors.black),
                           ),
                         ],
@@ -254,7 +254,7 @@ class _AddTasksModelState extends State<AddTasksModel> {
                 child: InkWell(
                   onTap: () {
                     final proditm = {
-                      "productName": _selectedProd.serviceName,
+                      "productName": _selectedProd.productName,
                       "productAmount": quantityController.text,
                       "productCost": _selectedProd.price
                     };

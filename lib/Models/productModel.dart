@@ -1,17 +1,30 @@
 class Product {
 
-  String serviceId;
-  String serviceName;
+  String productId;
+  String productName;
   String price;
   
-  Product({this.serviceId,this.serviceName,this.price});
+  Product({this.productId,this.productName,this.price});
  
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
+  // factory Product.fromJson(Map<String, dynamic> json) {
+  //   return Product(
 
-      serviceId: json["_id"] as String,
-      serviceName: json["proserName"] as String,
-      price: json["proserCost"] as String,
-    );
+  //     productId: json["_id"] as String,
+  //     productName: json["proserName"] as String,
+  //     price: json["proserCost"] as String,
+  //   );
+  // }
+  Product.fromJson(Map<String, dynamic> json) {
+    productId = json['_id'];
+    productName = json['proserName'];
+    price = json['proserCost'];
+  }
+
+   Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.productId;
+    data['proserName'] = this.productName;
+    data['proserCost'] = this.price;
+    return data;
   }
 }

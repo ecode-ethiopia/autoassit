@@ -1,4 +1,6 @@
-class Job {
+import 'package:flutter/foundation.dart';
+
+class Job with ChangeNotifier {
   String jobId;
   String jobno;
   String date;
