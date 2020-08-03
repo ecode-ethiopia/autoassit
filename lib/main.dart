@@ -1,4 +1,5 @@
 import 'package:autoassit/Providers/AuthProvider.dart';
+import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/Customer/add_customer.dart';
 import 'package:autoassit/Screens/Customer/pre_cus_list.dart';
 import 'package:autoassit/Screens/Customer/view_customer.dart';
@@ -18,6 +19,9 @@ void main(){
   runApp(OverlaySupport(child: MultiProvider(providers: [
       ChangeNotifierProvider(
         create: (_) => AuthProvider(),
+      ),
+       ChangeNotifierProvider(
+        create: (_) => JobProvider(),
       ),
     ],child: MyApp())));
 }

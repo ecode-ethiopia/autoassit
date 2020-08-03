@@ -49,7 +49,7 @@ class _VehicleCardsState extends State<VehicleCards> {
     return Stack(
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height / 3.5,
+          height: MediaQuery.of(context).size.height / 4,
           width: 140.0,
           child: Container(
             decoration: BoxDecoration(
@@ -86,7 +86,7 @@ class _VehicleCardsState extends State<VehicleCards> {
         ),
         Padding(
           padding: EdgeInsets.only(left: 45.0, 
-                                    top: MediaQuery.of(context).size.height / 3.9,
+                                    top: MediaQuery.of(context).size.height / 4.5,
                                     ),
           child: GestureDetector(
                  onTap: onTap,

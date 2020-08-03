@@ -67,7 +67,7 @@ class _ServicesListState extends State<ServicesList> {
     return Stack(
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height / 3.5,
+          height: MediaQuery.of(context).size.height / 4,
           width: 140.0,
           child: Container(
             decoration: BoxDecoration(
@@ -102,7 +102,7 @@ class _ServicesListState extends State<ServicesList> {
         ),
         Padding(
           padding: EdgeInsets.only(
-              left: 45.0, top: MediaQuery.of(context).size.height / 3.9),
+              left: 45.0, top: MediaQuery.of(context).size.height / 4.5),
           child: GestureDetector(
             onTap: onTap,
             child: Container(

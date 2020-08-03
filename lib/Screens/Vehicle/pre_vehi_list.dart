@@ -267,7 +267,7 @@ class _PreVehicleListState extends State<PreVehicleList> {
       print("eka his na oi");
       setState(() {
         jobno = int.parse(job.getString("jobno"));
-        jobno++;
+        // jobno++;
       });
       job.setString("jobno", jobno.toString());
        print("job no $jobno");

@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage>
               child: Container(
                 // color: Colors.amber,
                 // height: MediaQuery.of(context).size.height - 430.0,
-                height: MediaQuery.of(context).size.height / 2.8,
+                height: MediaQuery.of(context).size.height / 3.4,
                 child: _buildTabView(context)
               ),
             ),
@@ -196,18 +196,20 @@ class _HomePageState extends State<HomePage>
 
   Widget _buildExpansionTile(BuildContext context) {
     return ExpansionTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-            child: Text("On-going jobs",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w900)),
-          )
-        ],
+      title: Container(
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+              child: Text("On-going jobs",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w900)),
+            )
+          ],
+        ),
       ),
       initiallyExpanded: true,
       children: <Widget>[

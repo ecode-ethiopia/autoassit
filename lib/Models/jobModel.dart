@@ -33,25 +33,42 @@ class Job {
       this.supervisorName
 });
 
-  factory Job.fromJson(Map<String, dynamic> json) {
-    return Job(
-      jobId: json["_id"] as String,
-      jobno: json["jobNo"] as String,
-      date: json["date"] as String,
-      vNumber: json["vnumber"] as String,
-      vName: json["vName"] as String,
-      cusId: json["cusId"] as String,
-      cusName: json["cusName"] as String,
-      taskCount: json["taskCount"] as String,
-      total: json["total"] as String,
-      procerCharge: json["procerCharge"] as String,
-      labourCharge: json["labourCharge"] as String,
-      status: json["status"] as String,
-      garageId: json["garageId"] as String,
-      garageName: json["garageName"] as String,
-      supervisorName: json["supervisorName"] as String,
-    );
-  }
+Job.fromJson(Map<String, dynamic> map)
+      :  jobId= map["_id"],
+      jobno= map["jobNo"],
+      date= map["date"],
+      vNumber= map["vnumber"],
+      vName= map["vName"],
+      cusId= map["cusId"],
+      cusName= map["cusName"],
+      taskCount= map["taskCount"],
+      total= map["total"],
+      procerCharge= map["procerCharge"],
+      labourCharge= map["labourCharge"],
+      status= map["status"],
+      garageId= map["garageId"],
+      garageName= map["garageName"],
+      supervisorName= map["supervisorName"];
+
+  // factory Job.fromJson(Map<String, dynamic> json) {
+  //   return Job(
+  //     jobId: json["_id"] as String,
+  //     jobno: json["jobNo"] as String,
+  //     date: json["date"] as String,
+  //     vNumber: json["vnumber"] as String,
+  //     vName: json["vName"] as String,
+  //     cusId: json["cusId"] as String,
+  //     cusName: json["cusName"] as String,
+  //     taskCount: json["taskCount"] as String,
+  //     total: json["total"] as String,
+  //     procerCharge: json["procerCharge"] as String,
+  //     labourCharge: json["labourCharge"] as String,
+  //     status: json["status"] as String,
+  //     garageId: json["garageId"] as String,
+  //     garageName: json["garageName"] as String,
+  //     supervisorName: json["supervisorName"] as String,
+  //   );
+  // }
 }
 
 // class ServiceData {

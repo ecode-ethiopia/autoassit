@@ -67,7 +67,7 @@ class _CreateJobState extends State<CreateJob> {
       "procerCharge": "0",
       "labourCharge": "0",
       "total": "0",
-      "status": "not started",
+      "status": "onGoing",
       "token": userModel.token
     };
 
@@ -91,9 +91,16 @@ class _CreateJobState extends State<CreateJob> {
         setState(() {
           isJobCreating = false;
         });
+        int no = int.parse(job.getString("jobno"));
+        setState(() {
+          no++;
+        });
+        job.setString("jobno", no.toString());
+        print(job.getString("jobno"));
         jobModel = Job.fromJson(res_data);
         Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
-        job.setString("jobno", jobModel.jobno);
+        print("hutto");
+         Provider.of<JobProvider>(context, listen: false).startGetJobs();
         // Dialogs.successDialog(context, "Done", "Job Created Successfully !");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
@@ -121,7 +128,9 @@ class _CreateJobState extends State<CreateJob> {
             ]),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Color(0xFFef5350),
-        onPressed: () {},
+        onPressed: () {
+          print(jobModel.jobno);
+        },
         label: Text('Create Invoice'),
         icon: Icon(Icons.receipt),
       ),

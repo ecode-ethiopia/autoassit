@@ -11,7 +11,7 @@ class JobLoader extends StatelessWidget {
          width: MediaQuery.of(context).size.width /3,
          decoration: BoxDecoration(
              image: DecorationImage(
-                 image: AssetImage('assets/images/loading4.gif'),
+                 image: AssetImage('assets/images/macha.gif'),
                  fit: BoxFit.cover))),
     );
   }
