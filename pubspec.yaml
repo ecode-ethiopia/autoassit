@@ -37,6 +37,7 @@ dependencies:
   provider: ^4.0.2
   overlay_support: ^1.0.3
   intl: ^0.15.8
+  flutter_skeleton: ^0.1.0+1
 
 dev_dependencies:
   flutter_test:
