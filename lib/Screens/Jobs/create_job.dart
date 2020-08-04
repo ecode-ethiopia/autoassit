@@ -208,23 +208,25 @@ class _CreateJobState extends State<CreateJob> {
               ),
               SizedBox(height: 5),
               Container(
-                // margin: EdgeInsets.only(right:5),
-                height: MediaQuery.of(context).size.height / 13,
-                width: MediaQuery.of(context).size.width / 6,
+                padding: const EdgeInsets.all(5.0),
+                // height: MediaQuery.of(context).size.height / 13,
+                // width: MediaQuery.of(context).size.width / 4.5,
                 decoration: BoxDecoration(
-                    color: Color(0xFFffcd3c), shape: BoxShape.circle),
+                    color: Color(0xFF66BB6A),
+                    borderRadius: BorderRadius.circular(12)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       "Task Count",
+                      style: TextStyle(color:Colors.white,fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,
                     ),
                     Text(
                       "${jobModel.taskCount}",
                       softWrap: true,
                       style: TextStyle(
-                          color: Color(0xFFef5350),
+                          color:Colors.white,
                           fontFamily: 'OpenSans',
                           fontSize: 15.0,
                           fontWeight: FontWeight.w800),
