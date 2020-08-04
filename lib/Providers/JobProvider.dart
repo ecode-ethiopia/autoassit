@@ -53,5 +53,12 @@ class JobProvider with ChangeNotifier {
     });
   }
 
+   void updateTaskCountAndJobtot(String taskCount, String jobTot) {
+   _jobModel.taskCount = taskCount;
+   _jobModel.total = jobTot;
+   print("job tot is ${_jobModel.total}");
+    notifyListeners();
+  }
+
 
 }

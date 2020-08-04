@@ -8,6 +8,7 @@ import 'package:autoassit/Models/userModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
+import 'package:autoassit/Screens/Jobs/create_job.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +24,15 @@ class AddTasksModel extends StatefulWidget {
   final vehicle_name;
   final customer_name;
   final cusId;
+  String jobTot;
+  String taskCount;
+  Job jobmodel;
+
   AddTasksModel({Key key, this.username,
       this.vnumber,
       this.vehicle_name,
-      this.customer_name,this.cusId}) : super(key: key);
+      this.customer_name,this.cusId,
+      this.jobTot,this.taskCount,this.jobmodel}) : super(key: key);
 
   @override
   _AddTasksModelState createState() => _AddTasksModelState();
@@ -64,7 +70,9 @@ class _AddTasksModelState extends State<AddTasksModel> {
   int jobval;
   double procerCharge = 0;
   double labourCharge = 0;
-   double fullTaskCharge = 0;
+  double fullTaskCharge = 0;
+  double jobtot = 0;
+  int taskCount = 0;
 
   @override
   void initState() {
@@ -101,297 +109,270 @@ class _AddTasksModelState extends State<AddTasksModel> {
     });
   }
 
+Future<bool> onbackpress(){
+ Navigator.pop(context,jobModel);
+}
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SingleChildScrollView(
-              child: Padding(
-          padding: const EdgeInsets.only(right:20.0,left:20.0,bottom:20.0,top: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              // Align(
-              //   alignment: Alignment.topRight,
-              //                 child: IconButton(icon: Icon(Icons.close,
-              //                  color: Colors.red,  
-              //   ), onPressed: (){
-              //     Navigator.of(context).pop();
-              //   }),
-              // ),
-              Padding(
-                padding: const EdgeInsets.only(top:10.0),
-                child: Center(
-                    child: Text(
-                  "Add new Job task",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-                )),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width / 1.2,
-                margin: EdgeInsets.only(top: 32),
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Select the service :",
-                  style: TextStyle(
-                    color: Color.fromRGBO(143, 148, 251, 1),
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 70,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(12)
-                ),
-                width: MediaQuery.of(context).size.width / 1.5,
-                child: DropdownButton<Service>(
-                  hint: Text("  Select Service",),
-                  value: _selectedService,
-                  onChanged: (Service value) {
-                    serviceIndexes.clear();
-                    setState(() {
-                      _selectedService = value;
-                      // selectedServices.add(_selectedService);
-                    });
-
-                    iniServices();
-                  },
-                  items: _filteredService.map((Service val) {
-                    return DropdownMenuItem<Service>(
-                      value: val,
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "  " + val.serviceName,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width / 1.2,
-                // margin: EdgeInsets.only(top: 32),
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Select the product :",
-                  style: TextStyle(
-                    color: Color.fromRGBO(143, 148, 251, 1),
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width / 1.5,
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(12)
-                ),
-                child: DropdownButton<Product>(
-                  hint: Text("  Select Product",),
-                  value: _selectedProd,
-                  onChanged: (Product value) {
-                    setState(() {
-                      _selectedProd = value;
-                      // selectedServices.add(_selectedService);
-                    });
-                  },
-                  items: _filteredProduct.map((Product prod) {
-                    return DropdownMenuItem<Product>(
-                      value: prod,
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "  " + prod.productName,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              // SizedBox(
-              //   height: 30,
-              // ),
-              // Container(
-              //   // width: MediaQuery.of(context).size.width / 1.5,
-              //   // height: MediaQuery.of(context).size.height / 14,
-              //   child: TextFormField(
-              //     controller: quantityController,
-              //     decoration: new InputDecoration(
-              //       labelText: "Product Quantity",
-              //       fillColor: Colors.amber,
-              //       border: new OutlineInputBorder(
-              //         borderRadius: new BorderRadius.circular(12.0),
-              //         borderSide: new BorderSide(),
-              //       ),
-              //       //fillColor: Colors.green
-              //     ),
-              //     keyboardType: TextInputType.number,
-              //     style: new TextStyle(
-              //       fontFamily: "Poppins",
-              //     ),
-              //   ),
-              // ),
-               SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width / 1.2,
-                // margin: EdgeInsets.only(top: 32),
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Select product amount :",
-                  style: TextStyle(
-                    color: Color.fromRGBO(143, 148, 251, 1),
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 40,
-                  margin: EdgeInsets.only(top: 10),
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(color: Colors.black12, blurRadius: 5)
-                      ]),
-                  child: new DropdownButton(
-                    value: _currentAmount,
-                    items: _dropDownMenuItems,
-                    onChanged: changedDropDownItem,
+    return WillPopScope(
+      onWillPop:  onbackpress,
+          child: Container(
+        child: SingleChildScrollView(
+                child: Padding(
+            padding: const EdgeInsets.only(right:20.0,left:20.0,bottom:20.0,top: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // Align(
+                //   alignment: Alignment.topRight,
+                //                 child: IconButton(icon: Icon(Icons.close,
+                //                  color: Colors.red,  
+                //   ), onPressed: (){
+                //     Navigator.of(context).pop();
+                //   }),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(top:10.0),
+                  child: Center(
+                      child: Text(
+                    "Add new Job task",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                   )),
-              SizedBox(
-                height: 20,
-              ),
-              // Container(
-              //   padding: EdgeInsets.all(10),
-              //   decoration: BoxDecoration(
-              //     color:Color(0xFFef5350),
-              //     borderRadius: BorderRadius.circular(12),
-              //   ),
-              //   width: MediaQuery.of(context).size.width / 2.5,
-              //   child: InkWell(
-              //     onTap: () {
-              //       // final proditm = {
-              //       //   "productName": _selectedProd.productName,
-              //       //   "productAmount": quantityController.text,
-              //       //   "productCost": _selectedProd.price
-              //       // };
-              //       // prodIndexes.add(proditm);
-              //       // double temp = double.parse(_selectedProd.price);
-              //       // double totProcer = temp* int.parse(quantityController.text);
-              //       // setState(() {
-              //       //   procerCharge = procerCharge + totProcer;
-              //       //   fullTaskCharge = procerCharge + labourCharge;
-              //       // });
-              //       // print("--------products-------");
-              //       // print(prodIndexes);
-              //       // print("$procerCharge --- $fullTaskCharge");
-              //       // print("--------products-------");
-              //     },
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: <Widget>[Text("Save Product", style: TextStyle(color:Colors.white))],
-              //     ),
-              //   ),
-              // ),
-              SizedBox(
-                height: 15,
-              ),
-              InkWell(
-                  onTap: () async {
-                       print("working");
-                       if(serviceIndexes.isNotEmpty && prodIndexes.isNotEmpty){
-                              final body = {
-                          "jobId": jobModel.jobId,
-                          "jobNo": jobModel.jobno,
-                          "date": DateTime.now().toString(),
-                          "vnumber": jobModel.vNumber,
-                          "vName": jobModel.vName,
-                          "cusId": jobModel.cusId,
-                          "cusName": jobModel.cusName,
-                          "procerCharge": procerCharge.toString(),
-                          "labourCharge": "$labourCharge",
-                          "total": "$fullTaskCharge",
-                          "status": "onGoing",
-                          "services": serviceIndexes,
-                          "products": prodIndexes,
-                          "token": userModel.token
-                        };
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  margin: EdgeInsets.only(top: 32),
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Text(
+                    "Select the service :",
+                    style: TextStyle(
+                      color: Color.fromRGBO(143, 148, 251, 1),
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 70,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  child: DropdownButton<Service>(
+                    hint: Text("  Select Service",),
+                    value: _selectedService,
+                    onChanged: (Service value) {
+                      serviceIndexes.clear();
+                      setState(() {
+                        _selectedService = value;
+                        // selectedServices.add(_selectedService);
+                      });
 
-                        print(body);
+                      iniServices();
+                    },
+                    items: _filteredService.map((Service val) {
+                      return DropdownMenuItem<Service>(
+                        value: val,
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "  " + val.serviceName,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  // margin: EdgeInsets.only(top: 32),
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Text(
+                    "Select the product :",
+                    style: TextStyle(
+                      color: Color.fromRGBO(143, 148, 251, 1),
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  child: DropdownButton<Product>(
+                    hint: Text("  Select Product",),
+                    value: _selectedProd,
+                    onChanged: (Product value) {
+                      setState(() {
+                        _selectedProd = value;
+                        // selectedServices.add(_selectedService);
+                      });
+                    },
+                    items: _filteredProduct.map((Product prod) {
+                      return DropdownMenuItem<Product>(
+                        value: prod,
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "  " + prod.productName,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                 SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  // margin: EdgeInsets.only(top: 32),
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Text(
+                    "Select product amount :",
+                    style: TextStyle(
+                      color: Color.fromRGBO(143, 148, 251, 1),
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                Container(
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    height: 40,
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(color: Colors.black12, blurRadius: 5)
+                        ]),
+                    child: new DropdownButton(
+                      value: _currentAmount,
+                      items: _dropDownMenuItems,
+                      onChanged: changedDropDownItem,
+                    )),
+               
+                SizedBox(
+                  height: 15,
+                ),
+                InkWell(
+                    onTap: () async {
+                         print("working");
+                         if(serviceIndexes.isNotEmpty && prodIndexes.isNotEmpty){
+                                final body = {
+                            "jobId": jobModel.jobId,
+                            "jobNo": jobModel.jobno,
+                            "date": DateTime.now().toString(),
+                            "vnumber": jobModel.vNumber,
+                            "vName": jobModel.vName,
+                            "cusId": jobModel.cusId,
+                            "cusName": jobModel.cusName,
+                            "procerCharge": procerCharge.toString(),
+                            "labourCharge": "$labourCharge",
+                            "total": "$fullTaskCharge",
+                            "status": "onGoing",
+                            "services": serviceIndexes,
+                            "products": prodIndexes,
+                            "token": userModel.token
+                          };
 
-                        Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+                          print(body);
 
-                        final response = await http.post('${URLS.BASE_URL}/task/newtask',
-                            body: jsonEncode(body), headers: requestHeaders);
-                        print("workingggggggggggg");
-                        var data = response.body;
-                        // print(body);
-                        print(json.decode(data));
+                          Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
 
-                        Map<String, dynamic> res_data = jsonDecode(data);
+                          final response = await http.post('${URLS.BASE_URL}/task/newtask',
+                              body: jsonEncode(body), headers: requestHeaders);
+                          print("workingggggggggggg");
+                          var data = response.body;
+                          // print(body);
+                          print(json.decode(data));
 
-                        try {
-                          if (response.statusCode == 200) {
-                            // clearcontrollers();
-                           
-                            // jobModel = Job.fromJson(res_data);
-                            // Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
-                            print("hutto vda");
-                            Dialogs.successDialog(context,"Done", "Task added succefully");
-                            Provider.of<JobProvider>(context, listen: false).startGetJobs();
-                 
-                          } else {
-                            // Dialogs.errorDialog(context, "F", "Something went wrong !");
-                            print("job coudlnt create !");
-                            
+                          Map<String, dynamic> res_data = jsonDecode(data);
+
+                          try {
+                            if (response.statusCode == 200) {
+                              // clearcontrollers();
+                             
+                              // jobModel = Job.fromJson(res_data);
+                              
+                              setState(() {
+                              double totnow = double.parse(jobModel.total);
+                              int taskCountnw = int.parse(jobModel.taskCount);
+                              jobtot = totnow + fullTaskCharge;
+                              taskCount = taskCountnw + 1;
+                              jobModel.taskCount = taskCount.toString();
+                              jobModel.total = jobtot.toString();
+                              }); 
+                              Provider.of<JobProvider>(context, listen: false).updateTaskCountAndJobtot("$taskCount", "$jobtot");
+                              print("$taskCount----$jobtot");
+                             
+                              Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                               successDialog("Done", "Task added succefully");
+                   
+                            } else {
+                              // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                              print("job coudlnt create !");
+                              
+                            }
+                          } catch (e) {
+                            print(e);
                           }
-                        } catch (e) {
-                          print(e);
-                        }
-                       }else{
-                         print("empty");
-                          Dialogs.errorDialog(context, "Error", "select services & products first !");
-                       }
-                  },
-                  child: Container(
-        height: 45,
-        width: MediaQuery.of(context).size.width / 1.2,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                         }else{
+                           print("empty");
+                            Dialogs.errorDialog(context, "Error", "select services & products first !");
+                         }
+                    },
+                    child: Container(
+          height: 45,
+          width: MediaQuery.of(context).size.width / 1.2,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(50))),
+          child: Center(
+            child: Text(
+              'Add Task'.toUpperCase(),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            borderRadius: BorderRadius.all(Radius.circular(50))),
-        child: Center(
-          child: Text(
-            'Add Task'.toUpperCase(),
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-        ),
-      ),)
-            ],
+        ),)
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<dynamic> successDialog(String title, String dec) {
+    return AwesomeDialog(
+            context: context,
+            dialogType: DialogType.SUCCES,
+            animType: AnimType.TOPSLIDE,
+            tittle: title,
+            desc: dec,
+            // btnCancelOnPress: () {},
+            btnOkOnPress: () {
+               Navigator.pop(context,jobModel);
+            })
+        .show();
   }
 
   void iniServices() {

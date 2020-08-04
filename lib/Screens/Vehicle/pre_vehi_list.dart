@@ -278,6 +278,7 @@ class _PreVehicleListState extends State<PreVehicleList> {
                                      vnumber: vnumber,
                                      vehicle_name: vehicle_name,
                                      customer_name: customer_name,
-                                     cusId: cusId,)));
+                                     cusId: cusId,
+                                    )));
   }
 }

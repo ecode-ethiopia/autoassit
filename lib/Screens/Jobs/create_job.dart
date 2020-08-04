@@ -53,6 +53,13 @@ class _CreateJobState extends State<CreateJob> {
     // jobModel = Provider.of<JobProvider>(context, listen: false).jobModel;
   }
 
+  void updateInformation(Job jobb) {
+    setState(() {
+      jobModel.taskCount = jobb.taskCount;
+      jobModel.total = jobb.total;
+    });
+  }
+
   void startCreateJobbbbbb() async {
      SharedPreferences job = await SharedPreferences.getInstance();
 
@@ -144,7 +151,7 @@ class _CreateJobState extends State<CreateJob> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(
-          height: MediaQuery.of(context).size.height / 17.5,
+          height: MediaQuery.of(context).size.height / 25,
         ),
         _jobDetails(),
         Padding(
@@ -199,7 +206,7 @@ class _CreateJobState extends State<CreateJob> {
                   fontFamily: 'Montserrat',
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Container(
                 // margin: EdgeInsets.only(right:5),
                 height: MediaQuery.of(context).size.height / 13,
@@ -220,11 +227,28 @@ class _CreateJobState extends State<CreateJob> {
                           color: Color(0xFFef5350),
                           fontFamily: 'OpenSans',
                           fontSize: 15.0,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
+              ),
+              SizedBox(height: 5),
+              Container(
+                padding: const EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                  color: Color(0xFFef5350),
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                child: Text(
+                        "Rs.${jobModel.total}0",
+                        style: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color:Colors.white,
+                          fontWeight: FontWeight.w800
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
               ),
             ],
           ),
@@ -250,8 +274,8 @@ class _CreateJobState extends State<CreateJob> {
         child: MaterialButton(
           color: Color(0xFFef5350),
           textColor: Colors.white,
-          onPressed: () {
-            showDialog(
+          onPressed: () async {
+            Job jobeka = await showDialog(
                 barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
@@ -261,10 +285,14 @@ class _CreateJobState extends State<CreateJob> {
                         vehicle_name: widget.vehicle_name,
                         cusId: widget.cusId,
                         customer_name: widget.customer_name,
+                        jobmodel: jobModel,
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12))));
                 });
+                print("issssssssssss ${jobeka.taskCount}");
+                print("issssssssssss ${jobeka.total}");
+                updateInformation(jobeka);
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
