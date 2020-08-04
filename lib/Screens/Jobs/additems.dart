@@ -1,12 +1,21 @@
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_products.dart';
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_services.dart';
+import 'package:autoassit/Controllers/ApiServices/variables.dart';
+import 'package:autoassit/Models/jobModel.dart';
 import 'package:autoassit/Models/productModel.dart';
 import 'package:autoassit/Models/servicesModel.dart';
+import 'package:autoassit/Models/userModel.dart';
+import 'package:autoassit/Providers/AuthProvider.dart';
+import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Utils/dialogs.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:autoassit/Controllers/ApiServices/Job_services/create_job_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddTasksModel extends StatefulWidget {
   final username;
@@ -40,18 +49,44 @@ class _AddTasksModelState extends State<AddTasksModel> {
   Product _selectedProd;
 
   List prodIndexes = [];
+  List __proAmount = ["1","2","3","4","5","6","7","8","9","10"];
+  String _currentAmount;
+  List<DropdownMenuItem<String>> _dropDownMenuItems;
+  get _amount => _currentAmount;
 
   final quantityController = TextEditingController();
 
   SharedPreferences login;
+  Job jobModel;
+  UserModel userModel;
 
   int jobno = 1;
   int jobval;
+  double procerCharge = 0;
+  double labourCharge = 0;
+   double fullTaskCharge = 0;
 
   @override
   void initState() {
     super.initState();
-    GetServicesController.getServices().then((servicesFromServer) {
+   getProductsServices();
+   userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
+   jobModel = Provider.of<JobProvider>(context, listen: false).jobModel;
+   _dropDownMenuItems = getDropDownMenuItems();
+   _currentAmount = _dropDownMenuItems[0].value;
+  }
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = new List();
+    for (String amount in __proAmount) {
+      items.add(new DropdownMenuItem(value: amount, child: new Text(amount)));
+    }
+    return items;
+  }
+  
+  getProductsServices(){
+     
+      GetServicesController.getServices().then((servicesFromServer) {
       setState(() {
         _filteredService = servicesFromServer;
         print("fetched");
@@ -72,10 +107,18 @@ class _AddTasksModelState extends State<AddTasksModel> {
     return Container(
       child: SingleChildScrollView(
               child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.only(right:20.0,left:20.0,bottom:20.0,top: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              // Align(
+              //   alignment: Alignment.topRight,
+              //                 child: IconButton(icon: Icon(Icons.close,
+              //                  color: Colors.red,  
+              //   ), onPressed: (){
+              //     Navigator.of(context).pop();
+              //   }),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(top:10.0),
                 child: Center(
@@ -84,9 +127,6 @@ class _AddTasksModelState extends State<AddTasksModel> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 )),
               ),
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height / 65,
-              // ),
               Container(
                 width: MediaQuery.of(context).size.width / 1.2,
                 margin: EdgeInsets.only(top: 32),
@@ -118,15 +158,7 @@ class _AddTasksModelState extends State<AddTasksModel> {
                       // selectedServices.add(_selectedService);
                     });
 
-                    final saleitm = {
-                      "serviceName": _selectedService.serviceName,
-                      "serviceCost": _selectedService.price
-                    };
-                    serviceIndexes.add(saleitm);
-
-                    print("--------services-------");
-                    print(serviceIndexes);
-                    print("--------services-------");
+                    iniServices();
                   },
                   items: _filteredService.map((Service val) {
                     return DropdownMenuItem<Service>(
@@ -146,33 +178,6 @@ class _AddTasksModelState extends State<AddTasksModel> {
               SizedBox(
                 height: 30,
               ),
-              // Container(
-              //   padding: EdgeInsets.all(10),
-              //   decoration: BoxDecoration(
-              //     color:Color(0xFFef5350),
-              //     borderRadius: BorderRadius.circular(12),
-              //   ),
-              //   width: MediaQuery.of(context).size.width / 2.5,
-              //   child: InkWell(
-              //     onTap: () {
-              //       final saleitm = {
-              //         "serviceName": _selectedService.serviceName,
-              //         "serviceCost": _selectedService.price
-              //       };
-              //       serviceIndexes.add(saleitm);
-              //       print("--------services-------");
-              //       print(serviceIndexes);
-              //       print("--------services-------");
-              //     },
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: <Widget>[Text("Save Service", style: TextStyle(color:Colors.white))],
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 24,
-              // ),
               Container(
                 width: MediaQuery.of(context).size.width / 1.2,
                 // margin: EdgeInsets.only(top: 32),
@@ -221,90 +226,151 @@ class _AddTasksModelState extends State<AddTasksModel> {
               // SizedBox(
               //   height: 30,
               // ),
+              // Container(
+              //   // width: MediaQuery.of(context).size.width / 1.5,
+              //   // height: MediaQuery.of(context).size.height / 14,
+              //   child: TextFormField(
+              //     controller: quantityController,
+              //     decoration: new InputDecoration(
+              //       labelText: "Product Quantity",
+              //       fillColor: Colors.amber,
+              //       border: new OutlineInputBorder(
+              //         borderRadius: new BorderRadius.circular(12.0),
+              //         borderSide: new BorderSide(),
+              //       ),
+              //       //fillColor: Colors.green
+              //     ),
+              //     keyboardType: TextInputType.number,
+              //     style: new TextStyle(
+              //       fontFamily: "Poppins",
+              //     ),
+              //   ),
+              // ),
+               SizedBox(
+                height: 10,
+              ),
               Container(
-                // width: MediaQuery.of(context).size.width / 1.5,
-                // height: MediaQuery.of(context).size.height / 14,
-                child: TextFormField(
-                  controller: quantityController,
-                  decoration: new InputDecoration(
-                    labelText: "Product Quantity",
-                    fillColor: Colors.amber,
-                    border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(12.0),
-                      borderSide: new BorderSide(),
-                    ),
-                    //fillColor: Colors.green
-                  ),
-                  keyboardType: TextInputType.number,
-                  style: new TextStyle(
-                    fontFamily: "Poppins",
+                width: MediaQuery.of(context).size.width / 1.2,
+                // margin: EdgeInsets.only(top: 32),
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: Text(
+                  "Select product amount :",
+                  style: TextStyle(
+                    color: Color.fromRGBO(143, 148, 251, 1),
+                    fontSize: 17,
                   ),
                 ),
               ),
+              Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: 40,
+                  margin: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 5)
+                      ]),
+                  child: new DropdownButton(
+                    value: _currentAmount,
+                    items: _dropDownMenuItems,
+                    onChanged: changedDropDownItem,
+                  )),
               SizedBox(
                 height: 20,
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color:Color(0xFFef5350),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                width: MediaQuery.of(context).size.width / 2.5,
-                child: InkWell(
-                  onTap: () {
-                    final proditm = {
-                      "productName": _selectedProd.productName,
-                      "productAmount": quantityController.text,
-                      "productCost": _selectedProd.price
-                    };
-                    prodIndexes.add(proditm);
-                    print("--------services-------");
-                    print(prodIndexes);
-                    print("--------services-------");
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[Text("Save Product", style: TextStyle(color:Colors.white))],
-                  ),
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.all(10),
+              //   decoration: BoxDecoration(
+              //     color:Color(0xFFef5350),
+              //     borderRadius: BorderRadius.circular(12),
+              //   ),
+              //   width: MediaQuery.of(context).size.width / 2.5,
+              //   child: InkWell(
+              //     onTap: () {
+              //       // final proditm = {
+              //       //   "productName": _selectedProd.productName,
+              //       //   "productAmount": quantityController.text,
+              //       //   "productCost": _selectedProd.price
+              //       // };
+              //       // prodIndexes.add(proditm);
+              //       // double temp = double.parse(_selectedProd.price);
+              //       // double totProcer = temp* int.parse(quantityController.text);
+              //       // setState(() {
+              //       //   procerCharge = procerCharge + totProcer;
+              //       //   fullTaskCharge = procerCharge + labourCharge;
+              //       // });
+              //       // print("--------products-------");
+              //       // print(prodIndexes);
+              //       // print("$procerCharge --- $fullTaskCharge");
+              //       // print("--------products-------");
+              //     },
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: <Widget>[Text("Save Product", style: TextStyle(color:Colors.white))],
+              //     ),
+              //   ),
+              // ),
               SizedBox(
-                height: 34,
+                height: 15,
               ),
               InkWell(
                   onTap: () async {
-                    SharedPreferences job = await SharedPreferences.getInstance();
-                    int jobnumber = job.getInt("jobno")!= null ? job.getInt("jobno"): 1 ;
-                    final body = {
-                      "services": serviceIndexes,
-                      "products": prodIndexes,
-                      "date": DateTime.now().toString(),
-                      "vnumber": widget.vnumber,
-                      "vName": widget.vehicle_name,
-                      "cusId": widget.cusId,
-                      "cusName": widget.customer_name,
-                      "total": "123244",
-                      "status": "not started",
-                      "jobNo": jobnumber.toString()
-                    };
-                    CreateJobService.createJob(body,context).then((success) async {
-                        print(success);
-                        final _result = success;
-                        if (_result) {
-                          // clearcontrollers();
-                          jobval = jobno + 1;
-                          SharedPreferences job = await SharedPreferences.getInstance();
-                          job.setInt("jobno", jobval);
-                          print(jobval.toString());
+                       print("working");
+                       if(serviceIndexes.isNotEmpty && prodIndexes.isNotEmpty){
+                              final body = {
+                          "jobId": jobModel.jobId,
+                          "jobNo": jobModel.jobno,
+                          "date": DateTime.now().toString(),
+                          "vnumber": jobModel.vNumber,
+                          "vName": jobModel.vName,
+                          "cusId": jobModel.cusId,
+                          "cusName": jobModel.cusName,
+                          "procerCharge": procerCharge.toString(),
+                          "labourCharge": "$labourCharge",
+                          "total": "$fullTaskCharge",
+                          "status": "onGoing",
+                          "services": serviceIndexes,
+                          "products": prodIndexes,
+                          "token": userModel.token
+                        };
 
-                          // Dialogs.successDialog(context, "Done", "Job Created Successfully !");
-                        } else {
-                          // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                        print(body);
+
+                        Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+
+                        final response = await http.post('${URLS.BASE_URL}/task/newtask',
+                            body: jsonEncode(body), headers: requestHeaders);
+                        print("workingggggggggggg");
+                        var data = response.body;
+                        // print(body);
+                        print(json.decode(data));
+
+                        Map<String, dynamic> res_data = jsonDecode(data);
+
+                        try {
+                          if (response.statusCode == 200) {
+                            // clearcontrollers();
+                           
+                            // jobModel = Job.fromJson(res_data);
+                            // Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
+                            print("hutto vda");
+                            Dialogs.successDialog(context,"Done", "Task added succefully");
+                            Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                 
+                          } else {
+                            // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                            print("job coudlnt create !");
+                            
+                          }
+                        } catch (e) {
+                          print(e);
                         }
-                      });
-                     
-                    // print(body);
+                       }else{
+                         print("empty");
+                          Dialogs.errorDialog(context, "Error", "select services & products first !");
+                       }
                   },
                   child: Container(
         height: 45,
@@ -316,7 +382,7 @@ class _AddTasksModelState extends State<AddTasksModel> {
             borderRadius: BorderRadius.all(Radius.circular(50))),
         child: Center(
           child: Text(
-            'Create job'.toUpperCase(),
+            'Add Task'.toUpperCase(),
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
@@ -326,5 +392,57 @@ class _AddTasksModelState extends State<AddTasksModel> {
         ),
       ),
     );
+  }
+
+  void iniServices() {
+    final saleitm = {
+      "serviceName": _selectedService.serviceName,
+      "serviceCost": _selectedService.price,
+      "labourCharge": _selectedService.labourCharge
+    };
+    serviceIndexes.add(saleitm);
+    setState(() {
+      labourCharge = double.parse(_selectedService.labourCharge);
+      procerCharge = procerCharge + double.parse(_selectedService.price);
+      fullTaskCharge = procerCharge + labourCharge;
+    });
+    
+    print("--------services-------");
+    print(serviceIndexes);
+    print("$procerCharge --- $labourCharge --- full tot $fullTaskCharge");
+    print("--------services-------");
+  }
+
+  void changedDropDownItem(String selectedRole) {
+    if(_selectedProd != null){
+        setState(() {
+      _currentAmount = selectedRole;
+    });
+    print(_currentAmount);
+    print("not null");
+    iniProcersAndTotal();
+    }else{
+      Dialogs.errorDialog(context, "error", "Select some products first !");
+    }
+   
+  }
+
+  void iniProcersAndTotal() {
+     final proditm = {
+                      "productName": _selectedProd.productName,
+                      "productAmount": _currentAmount,
+                      "productCost": _selectedProd.price
+                    };
+                    prodIndexes.add(proditm);
+                    double temp = double.parse(_selectedProd.price);
+                    double totProcer = temp* int.parse(_currentAmount);
+                    setState(() {
+                      procerCharge = procerCharge + totProcer;
+                      fullTaskCharge = procerCharge + labourCharge;
+                    });
+                    print("--------products-------");
+                    print(prodIndexes);
+                    print("$procerCharge --- $labourCharge --- full tot $fullTaskCharge");
+                    print("--------products-------");
   }
 }
