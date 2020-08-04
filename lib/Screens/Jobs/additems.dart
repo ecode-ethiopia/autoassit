@@ -72,6 +72,8 @@ class _AddTasksModelState extends State<AddTasksModel> {
   double labourCharge = 0;
   double fullTaskCharge = 0;
   double jobtot = 0;
+  double jobProcerCharge = 0;
+  double joblabourCharge = 0;
   int taskCount = 0;
 
   @override
@@ -314,10 +316,16 @@ Future<bool> onbackpress(){
                               setState(() {
                               double totnow = double.parse(jobModel.total);
                               int taskCountnw = int.parse(jobModel.taskCount);
+                              double procer = double.parse(jobModel.procerCharge);
+                              double labour = double.parse(jobModel.labourCharge);
                               jobtot = totnow + fullTaskCharge;
                               taskCount = taskCountnw + 1;
+                              jobProcerCharge = procer + procerCharge;
+                              joblabourCharge = labour + labourCharge;
                               jobModel.taskCount = taskCount.toString();
                               jobModel.total = jobtot.toString();
+                              jobModel.procerCharge = jobProcerCharge.toString();
+                              jobModel.labourCharge = joblabourCharge.toString();
                               }); 
                               Provider.of<JobProvider>(context, listen: false).updateTaskCountAndJobtot("$taskCount", "$jobtot");
                               print("$taskCount----$jobtot");

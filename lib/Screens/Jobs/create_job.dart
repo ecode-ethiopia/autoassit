@@ -57,7 +57,28 @@ class _CreateJobState extends State<CreateJob> {
     setState(() {
       jobModel.taskCount = jobb.taskCount;
       jobModel.total = jobb.total;
+      jobModel.procerCharge = jobb.procerCharge;
+      jobModel.labourCharge = jobb.labourCharge;
     });
+    print(jobModel.total);
+    startUpdateJobDetails(jobb.taskCount,jobb.total);
+  }
+
+  void startUpdateJobDetails(String taskCount,String total) async {
+    Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+    final body = {
+      '_id': jobModel.jobId,
+      'taskCount': jobModel.taskCount,
+      'total': jobModel.total,
+      'procerCharge': jobModel.procerCharge,
+      'labourCharge': jobModel.labourCharge
+    };
+
+    await http.post('${URLS.BASE_URL}/job/updateTaskCountAndTot',
+        body: jsonEncode(body),headers: requestHeaders);
+ 
+    Provider.of<JobProvider>(context, listen: false).updateTaskCountAndJobtot(taskCount, total);
+    print("updateddddddddd ${jobModel.labourCharge}-----$total");
   }
 
   void startCreateJobbbbbb() async {
@@ -194,6 +215,8 @@ class _CreateJobState extends State<CreateJob> {
               _buildFields('Vehicle Name - ${jobModel.vName}'),
               _buildFields('Customer Name - ${jobModel.cusName}'),
               _buildFields('Supervisor Name - ${userModel.userName}'),
+              _buildFields('Service/Product Cost - Rs.${jobModel.procerCharge}0'),
+              _buildFields('Labour Charge - Rs.${jobModel.labourCharge}0'), 
             ],
           ),
           Column(
@@ -292,7 +315,7 @@ class _CreateJobState extends State<CreateJob> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12))));
                 });
-                print("issssssssssss ${jobeka.taskCount}");
+                print("issssssssssss ${jobeka.procerCharge}");
                 print("issssssssssss ${jobeka.total}");
                 updateInformation(jobeka);
           },
