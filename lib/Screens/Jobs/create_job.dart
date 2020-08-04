@@ -180,12 +180,87 @@ class _CreateJobState extends State<CreateJob> {
           child: _buttons(),
         ),
         Expanded(
-            child: Center(
-          child: Text(
-            "No Taks Added yet",
-            style: TextStyle(fontSize: 30),
-          ),
-        )
+            child: SizedBox(
+                          height: MediaQuery.of(context).size.height / 1.2,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(0),
+                            shrinkWrap: true,
+                            itemCount: 10,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20),
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      decoration: CustomIconDecoration(
+                                          iconSize: 20,
+                                          lineWidth: 1,
+                                          firstData: index == 0 ?? true,
+                                          lastData:
+                                              index == 10 - 1 ??
+                                                  true),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(50)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                offset: Offset(0, 3),
+                                                color: Color(0x20000000),
+                                                blurRadius: 5,
+                                              )
+                                            ]),
+                                        child: Icon(
+                                          true
+                                              ? Icons.fiber_manual_record
+                                              : Icons.radio_button_unchecked,
+                                          size: 20,
+                                          color: Color(0xFFef5350),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                        width: 80,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: Text("Task ${index + 1} -"),
+                                        )),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 12.0, bottom: 12.0),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(14.0),
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Color(0x20000000),
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 3))
+                                              ]),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text("services tika"),
+                                                SizedBox(
+                                                  height: 12,
+                                                ),
+                                                Text("products tika"),
+                                              ]),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ))
             // AddJobTaskPage()
             )
       ],
@@ -356,5 +431,71 @@ class _CreateJobState extends State<CreateJob> {
               IconButton(icon: Icon(Icons.settings), onPressed: () {}),
               IconButton(icon: Icon(Icons.more_vert), onPressed: () {})
             ]));
+  }
+}
+
+class CustomIconDecoration extends Decoration {
+  final double iconSize;
+  final double lineWidth;
+  final bool firstData;
+  final bool lastData;
+
+  CustomIconDecoration({
+    @required double iconSize,
+    @required double lineWidth,
+    @required bool firstData,
+    @required bool lastData,
+  })  : this.iconSize = iconSize,
+        this.lineWidth = lineWidth,
+        this.firstData = firstData,
+        this.lastData = lastData;
+
+  @override
+  BoxPainter createBoxPainter([onChanged]) {
+    return IconLine(
+        iconSize: iconSize,
+        lineWidth: lineWidth,
+        firstData: firstData,
+        lastData: lastData);
+  }
+}
+
+class IconLine extends BoxPainter {
+  final double iconSize;
+  final bool firstData;
+  final bool lastData;
+
+  final Paint paintLine;
+
+  IconLine({
+    @required double iconSize,
+    @required double lineWidth,
+    @required bool firstData,
+    @required bool lastData,
+  })  : this.iconSize = iconSize,
+        this.firstData = firstData,
+        this.lastData = lastData,
+        paintLine = Paint()
+          ..color = Colors.red
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = lineWidth
+          ..style = PaintingStyle.stroke;
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final leftOffset = Offset((iconSize / 2) + 20 , offset.dy);
+    final double iconSpace = iconSize / 1.8;
+
+    final Offset top = configuration.size.topLeft(Offset(leftOffset.dx, 0.0));
+    final Offset centerTop = configuration.size
+        .centerLeft(Offset(leftOffset.dx, leftOffset.dy - iconSpace));
+
+    final Offset centerBottom = configuration.size
+        .centerLeft(Offset(leftOffset.dx, leftOffset.dy + iconSpace));
+    final Offset end =
+        configuration.size.bottomLeft(Offset(leftOffset.dx, leftOffset.dy * 2));
+
+    if (!firstData) canvas.drawLine(top, centerTop, paintLine);
+    if (!lastData) canvas.drawLine(centerBottom, end, paintLine);
   }
 }
