@@ -7,6 +7,7 @@ import 'package:autoassit/Models/taskModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
+import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
@@ -174,85 +175,6 @@ class _CreateJobState extends State<CreateJob> {
       bottomNavigationBar: buildBottomAppBar(),
     );
   }
-
-  // void getTasks() async {
-  //   print("gettings takssssss");
-  //    Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
-  //    final body = {
-  //         'jobId': jobModel.jobId, 
-  //         'token': userModel.token
-  //    };
-  //   var req = await http.post('${URLS.BASE_URL}/task/getTaskByJobId',
-  //       body:jsonEncode(body), headers: requestHeaders);
-  //   var res = convert.jsonDecode(req.body);
-  //   print(res);
-  //   if (req.statusCode == 200) {
-  //     List listTasks = res;
-
-  //     if (listTasks.isNotEmpty) {
-  //       List<TaskModel> _temp = [];
-
-  //       for (int i = 0; i < listTasks.length; i++) {
-  //         _temp.add(TaskModel(
-  //           taskId: listTasks[i]['_id'],
-  //           jobId: listTasks[i]['jobId'],
-  //           jobno: listTasks[i]['jobNo'],
-  //           date: listTasks[i]['date'],
-  //           vNumber: listTasks[i]['vnumber'],
-  //           vName: listTasks[i]['vName'],
-  //           cusId: listTasks[i]['cusId'],
-  //           cusName: listTasks[i]['cusName'],
-  //           total: listTasks[i]['total'],
-  //           procerCharge: listTasks[i]['procerCharge'],
-  //           labourCharge: listTasks[i]['labourCharge'],
-  //           status: listTasks[i]['status'],
-  //           services: (listTasks[i]['services'] as List)
-  //               ?.map((i) => Service.fromJson(i))
-  //               ?.toList(),
-  //           products: (listTasks[i]['products'] as List)
-  //               ?.map((i) => Product.fromJson(i))
-  //               ?.toList(),
-  //           garageId: listTasks[i]['garageId'],
-  //           garageName: listTasks[i]['garageName'],
-  //           supervisorName: listTasks[i]['supervisorName'],
-  //         ));
-  //       }
-  //       // for (var i = 0; i < _temp.length; i++) {
-  //       //   if (_temp[i].subcomments.length != 0) {
-  //       //     subcomLength = subcomLength + _temp[i].subcomments.length;
-  //       //   }
-  //       // }
-
-  //       print(
-  //           "subcom count isssssssssssssssssssssssssssssssssssssssss ${_temp.length}");
-  //       setState(() {
-  //         _listTasks = _temp;
-  //         isfetched = false;
-  //         _temp = null;
-  //         // print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-  //         // print(_listComments[0].subcomments);
-  //         // print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-  //       });
-
-  //       // Future.delayed(Duration(seconds: 1), () {
-  //       //   _scrollController.animateTo(
-  //       //     _scrollController.position.minScrollExtent +
-  //       //         (_listComments.length + subcomLength) * 100,
-  //       //     curve: Curves.easeOut,
-  //       //     duration: const Duration(milliseconds: 300),
-  //       //   );
-  //       // });
-  //     }else {
-  //     print("empty response");
-  //     setState(() {
-  //       isfetched = false;
-  //       isEmpty = true;
-  //     });
-  //   }
-  //   } else{
-  //     print("something went wrong");
-  //   }
-  // }
 
   Widget _mainContent(BuildContext context) {
        _listTasks = [];
@@ -688,7 +610,12 @@ class _CreateJobState extends State<CreateJob> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+              IconButton(icon: Icon(Icons.home), onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => HomePage()),
+                    (Route<dynamic> route) => false);
+              }),
               IconButton(icon: Icon(Icons.more_vert), onPressed: () {})
             ]));
   }
