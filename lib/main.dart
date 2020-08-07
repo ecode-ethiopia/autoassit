@@ -1,5 +1,6 @@
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
+import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/Customer/add_customer.dart';
 import 'package:autoassit/Screens/Customer/pre_cus_list.dart';
 import 'package:autoassit/Screens/Customer/view_customer.dart';
@@ -22,6 +23,9 @@ void main(){
       ),
        ChangeNotifierProvider(
         create: (_) => JobProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => TaskProvider(),
       ),
     ],child: MyApp())));
 }

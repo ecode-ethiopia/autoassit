@@ -7,6 +7,7 @@ import 'package:autoassit/Models/servicesModel.dart';
 import 'package:autoassit/Models/userModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
+import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
 import 'package:autoassit/Utils/dialogs.dart';
@@ -330,7 +331,8 @@ Future<bool> onbackpress(){
                               Provider.of<JobProvider>(context, listen: false).updateTaskCountAndJobtot("$taskCount", "$jobtot");
                               print("$taskCount----$jobtot");
                              
-                              Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                              // Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                              Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
                                successDialog("Done", "Task added succefully");
                    
                             } else {

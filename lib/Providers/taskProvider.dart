@@ -8,38 +8,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskProvider with ChangeNotifier {
 
-  Task _taskModel;
-  List<Task> _taskList = [];
+  TaskModel _taskModel;
+  List<TaskModel> _taskList = [];
 
   // ignore: unnecessary_getters_setters
-  Task get taskModel => _taskModel;
+  TaskModel get taskModel => _taskModel;
 
-  List<Task> get listTasks => _taskList;
+  List<TaskModel> get listTasks => _taskList;
 
   // ignore: unnecessary_getters_setters
-  set taskModel(Task value) {
+  set taskModel(TaskModel value) {
     _taskModel = value;
   }
 
-  Future<void> startGetTasks() async {
+  Future<void> startGetTasks(String jobId) async {
     _taskList = [];
     SharedPreferences initializeToken = await SharedPreferences.getInstance();
 
     final body = {
+        'jobId': jobId,
         "token": initializeToken.getString("authtoken")
       };
 
       Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
       
-     String _url = "${URLS.BASE_URL}/job/getTaskByJobId";
+     String _url = "${URLS.BASE_URL}/task/getTaskByJobId";
     return http.post(_url,body: jsonEncode(body),headers: requestHeaders).then((res) async {
-      print("getting jobssssssssssssssss ");
+      print("getting taksssssssssssssssss ");
       // print(res.body);
       var convertedData = convert.jsonDecode(res.body);
-      // print(convertedData);
+      print(convertedData);
         List data = convertedData;
 
-        _taskList = data.map((item) => Task.fromJson(item)).toList();
+        _taskList = data.map((item) => TaskModel.fromJson(item)).toList();
+
+        print("service lengthhhhhhhhhhh ${_taskList[0].services[0].serviceName}");
 
 
       notifyListeners();

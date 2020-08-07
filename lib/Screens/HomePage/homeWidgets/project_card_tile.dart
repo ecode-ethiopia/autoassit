@@ -49,19 +49,31 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
 
   @override
   Widget build(BuildContext context) {
-    _jobList = [];
+  
+    return Column(
+      children: [
+        _bodyContent(context)
+      ],
+    );
+  }
+
+  Widget _bodyContent(BuildContext contect){
+      _jobList = [];
     _jobList = Provider.of<JobProvider>(context).listJobs;
     if (_jobList.isNotEmpty) {
       setState(() {
         isfetching = false;
         isEmpty = false;
       });
+    }else{
+      setState(() {
+        isfetching = false;
+        isEmpty = true;
+      });
     }
 
     var rng = new math.Random.secure();
-    return Column(
-      children: [
-        isfetching
+    return  isfetching
             ? 
             SizedBox(
               height: MediaQuery.of(context).size.height / 3,
@@ -163,7 +175,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                               ),
                               FAProgressBar(
                                 size: 4,
-                                currentValue: 75,
+                                currentValue: 50,
                                 progressColor: Colors.green,
                                 backgroundColor: Color(0xffF0F0F0),
                               ),
@@ -176,8 +188,6 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                       ),
                     ),
                   );
-                }),
-      ],
-    );
+                });
   }
 }

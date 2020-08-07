@@ -1,18 +1,16 @@
 import 'dart:convert' as convert;
 import 'dart:convert';
-
-import 'package:autoassit/Controllers/ApiServices/Job_services/create_job_service.dart';
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/jobModel.dart';
 import 'package:autoassit/Models/userModel.dart';
+import 'package:autoassit/Models/taskModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
-import 'package:autoassit/Screens/Jobs/Widgets/addTask_page.dart';
-import 'package:autoassit/Screens/Jobs/Widgets/add_task_modelbox.dart';
-import 'package:autoassit/Screens/Jobs/Widgets/change_task_page.dart';
+import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
+import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'additems.dart';
@@ -36,20 +34,27 @@ class CreateJob extends StatefulWidget {
 }
 
 class _CreateJobState extends State<CreateJob> {
+  //job section variables
   String currentDate;
   int jobval;
   UserModel userModel;
   Job jobModel;
   bool isJobCreating = true;
+  List<TaskModel> _listTasks = [];
+  bool isfetched = true;
+  bool isEmpty = false;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _scrollController = ScrollController();
     currentDate = Utils.getDate();
     print(currentDate);
     userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
     startCreateJobbbbbb();
+    
     // jobModel = Provider.of<JobProvider>(context, listen: false).jobModel;
   }
 
@@ -61,10 +66,10 @@ class _CreateJobState extends State<CreateJob> {
       jobModel.labourCharge = jobb.labourCharge;
     });
     print(jobModel.total);
-    startUpdateJobDetails(jobb.taskCount,jobb.total);
+    startUpdateJobDetails(jobb.taskCount, jobb.total);
   }
 
-  void startUpdateJobDetails(String taskCount,String total) async {
+  void startUpdateJobDetails(String taskCount, String total) async {
     Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
     final body = {
       '_id': jobModel.jobId,
@@ -75,14 +80,15 @@ class _CreateJobState extends State<CreateJob> {
     };
 
     await http.post('${URLS.BASE_URL}/job/updateTaskCountAndTot',
-        body: jsonEncode(body),headers: requestHeaders);
- 
-    Provider.of<JobProvider>(context, listen: false).updateTaskCountAndJobtot(taskCount, total);
+        body: jsonEncode(body), headers: requestHeaders);
+
+    Provider.of<JobProvider>(context, listen: false)
+        .updateTaskCountAndJobtot(taskCount, total);
     print("updateddddddddd ${jobModel.labourCharge}-----$total");
   }
 
   void startCreateJobbbbbb() async {
-     SharedPreferences job = await SharedPreferences.getInstance();
+    SharedPreferences job = await SharedPreferences.getInstance();
 
     final body = {
       "jobNo": job.getString("jobno"),
@@ -128,7 +134,9 @@ class _CreateJobState extends State<CreateJob> {
         jobModel = Job.fromJson(res_data);
         Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
         print("hutto");
-         Provider.of<JobProvider>(context, listen: false).startGetJobs();
+        Provider.of<JobProvider>(context, listen: false).startGetJobs();
+        Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
+        // getTasks();
         // Dialogs.successDialog(context, "Done", "Job Created Successfully !");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
@@ -167,7 +175,99 @@ class _CreateJobState extends State<CreateJob> {
     );
   }
 
+  // void getTasks() async {
+  //   print("gettings takssssss");
+  //    Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+  //    final body = {
+  //         'jobId': jobModel.jobId, 
+  //         'token': userModel.token
+  //    };
+  //   var req = await http.post('${URLS.BASE_URL}/task/getTaskByJobId',
+  //       body:jsonEncode(body), headers: requestHeaders);
+  //   var res = convert.jsonDecode(req.body);
+  //   print(res);
+  //   if (req.statusCode == 200) {
+  //     List listTasks = res;
+
+  //     if (listTasks.isNotEmpty) {
+  //       List<TaskModel> _temp = [];
+
+  //       for (int i = 0; i < listTasks.length; i++) {
+  //         _temp.add(TaskModel(
+  //           taskId: listTasks[i]['_id'],
+  //           jobId: listTasks[i]['jobId'],
+  //           jobno: listTasks[i]['jobNo'],
+  //           date: listTasks[i]['date'],
+  //           vNumber: listTasks[i]['vnumber'],
+  //           vName: listTasks[i]['vName'],
+  //           cusId: listTasks[i]['cusId'],
+  //           cusName: listTasks[i]['cusName'],
+  //           total: listTasks[i]['total'],
+  //           procerCharge: listTasks[i]['procerCharge'],
+  //           labourCharge: listTasks[i]['labourCharge'],
+  //           status: listTasks[i]['status'],
+  //           services: (listTasks[i]['services'] as List)
+  //               ?.map((i) => Service.fromJson(i))
+  //               ?.toList(),
+  //           products: (listTasks[i]['products'] as List)
+  //               ?.map((i) => Product.fromJson(i))
+  //               ?.toList(),
+  //           garageId: listTasks[i]['garageId'],
+  //           garageName: listTasks[i]['garageName'],
+  //           supervisorName: listTasks[i]['supervisorName'],
+  //         ));
+  //       }
+  //       // for (var i = 0; i < _temp.length; i++) {
+  //       //   if (_temp[i].subcomments.length != 0) {
+  //       //     subcomLength = subcomLength + _temp[i].subcomments.length;
+  //       //   }
+  //       // }
+
+  //       print(
+  //           "subcom count isssssssssssssssssssssssssssssssssssssssss ${_temp.length}");
+  //       setState(() {
+  //         _listTasks = _temp;
+  //         isfetched = false;
+  //         _temp = null;
+  //         // print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  //         // print(_listComments[0].subcomments);
+  //         // print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  //       });
+
+  //       // Future.delayed(Duration(seconds: 1), () {
+  //       //   _scrollController.animateTo(
+  //       //     _scrollController.position.minScrollExtent +
+  //       //         (_listComments.length + subcomLength) * 100,
+  //       //     curve: Curves.easeOut,
+  //       //     duration: const Duration(milliseconds: 300),
+  //       //   );
+  //       // });
+  //     }else {
+  //     print("empty response");
+  //     setState(() {
+  //       isfetched = false;
+  //       isEmpty = true;
+  //     });
+  //   }
+  //   } else{
+  //     print("something went wrong");
+  //   }
+  // }
+
   Widget _mainContent(BuildContext context) {
+       _listTasks = [];
+    _listTasks = Provider.of<TaskProvider>(context).listTasks;
+    if (_listTasks.isNotEmpty) {
+      setState(() {
+        isfetched = false;
+        isEmpty = false;
+      });
+    }else{
+      setState(() {
+        isfetched = false;
+        isEmpty = true;
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -180,91 +280,195 @@ class _CreateJobState extends State<CreateJob> {
           child: _buttons(),
         ),
         Expanded(
-            child: SizedBox(
-                          height: MediaQuery.of(context).size.height / 1.2,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(0),
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      decoration: CustomIconDecoration(
-                                          iconSize: 20,
-                                          lineWidth: 1,
-                                          firstData: index == 0 ?? true,
-                                          lastData:
-                                              index == 10 - 1 ??
-                                                  true),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(50)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                offset: Offset(0, 3),
-                                                color: Color(0x20000000),
-                                                blurRadius: 5,
-                                              )
-                                            ]),
-                                        child: Icon(
-                                          true
-                                              ? Icons.fiber_manual_record
-                                              : Icons.radio_button_unchecked,
-                                          size: 20,
-                                          color: Color(0xFFef5350),
-                                        ),
+            child: isfetched
+                ? CardListSkeleton(
+                    style: SkeletonStyle(
+                      theme: SkeletonTheme.Light,
+                      isShowAvatar: true,
+                      isCircleAvatar: true,
+                      barCount: 3,
+                    ),
+                  )
+                : isEmpty
+                    ? Center(
+                        child: Text(
+                          "No Taks Added yet",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      )
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height / 1.2,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(0),
+                          shrinkWrap: true,
+                          itemCount: _listTasks.length,
+                          itemBuilder: (context, index) {
+                            var task = _listTasks[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10.0, right: 10),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    decoration: CustomIconDecoration(
+                                        iconSize: 20,
+                                        lineWidth: 1,
+                                        firstData: index == 0 ?? true,
+                                        lastData:
+                                            index == _listTasks.length - 1 ??
+                                                true),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(50)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 3),
+                                              color: Color(0x20000000),
+                                              blurRadius: 5,
+                                            )
+                                          ]),
+                                      child: Icon(
+                                        task.status == "onGoing"
+                                            ? Icons.fiber_manual_record
+                                            : Icons.radio_button_unchecked,
+                                        size: 20,
+                                        color: Color(0xFFef5350),
                                       ),
                                     ),
-                                    Container(
-                                        width: 80,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Text("Task ${index + 1} -"),
-                                        )),
-                                    Expanded(
-                                      child: Padding(
+                                  ),
+                                  Column(
+                                    children: [
+                                          Container(
+                                          width: MediaQuery.of(context).size.width / 6.5,
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 5.0),
+                                            child: Text("Task ${index + 1} -"),
+                                          )),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: Stack(
+                                           children: <Widget>[ 
+                                             Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 12.0, bottom: 12.0),
+                                            bottom: 12.0),
                                         child: Container(
-                                          padding: const EdgeInsets.all(14.0),
+                                          padding: const EdgeInsets.fromLTRB(14.0,0,14.0,14.0),
                                           decoration: BoxDecoration(
-                                              color: Colors.white,
+                                                          color: Color(0xFFFFE4C7),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(12)),
                                               boxShadow: [
                                                 BoxShadow(
                                                     color: Color(0x20000000),
                                                     blurRadius: 5,
-                                                    offset: Offset(0, 3))
+                                                    offset: Offset(0, 7))
                                               ]),
                                           child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text("services tika"),
-                                                SizedBox(
-                                                  height: 12,
-                                                ),
-                                                Text("products tika"),
-                                              ]),
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                   Expanded(
+                                                     child: ListView.builder(
+                                                       controller: _scrollController,
+                                                       shrinkWrap: true,
+                                                       itemCount: task.services.length,
+                                                       itemBuilder: (context, index2){
+                                                         var services = task.services[index2];
+                                                         return Text("${services.serviceName} [ LC - Rs. ${services.labourCharge}]",
+                                                             style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontFamily: 'Montserrat',
+                                                                    ),
+                                                         );
+                                                       }),
+                                                   ),
+                                                  ]),
+                                                  SizedBox(height: 5,),
+                                                  Container(
+                                                    margin: EdgeInsets.only(bottom:5),
+                                                    child: Text("Products Cost [ Rs. ${task.procerCharge}0 ]",
+                                                               style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    fontFamily: 'Montserrat',
+                                                                      ),
+                                                           ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 35,
+                                                    // width: MediaQuery.of(context).size.width /2,
+                                                     child: ListView.builder(
+                                                       controller: _scrollController,
+                                                       scrollDirection: Axis.horizontal,
+                                                       shrinkWrap: true,
+                                                       itemCount: task.products.length,
+                                                       itemBuilder: (context, index3){
+                                                         var products = task.products[index3];
+                                                         return Wrap(
+                                                    direction: Axis.vertical,
+                                                           children:<Widget> [
+                                                             buildProductChip(products),
+                                                           ],
+                                                         );
+                                                       }),
+                                                   ),
+                                                   Container(
+                                                    margin: EdgeInsets.only(bottom:5),
+                                                    child: Text("Total Cost [ Rs. ${task.total}0 ]",
+                                                               style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    fontFamily: 'Montserrat',
+                                                                      ),
+                                                           ),
+                                                  ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          ))
+                                ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        ))
             // AddJobTaskPage()
             )
       ],
     );
+  }
+
+  Widget buildProductChip(ProductModel products) {
+    String initAmount(){
+      if(int.parse(products.amount) > 1){
+        return 's';
+      }
+      else{
+        return '';
+      }
+    }
+    return Container(
+      margin: EdgeInsets.only(right:2),
+            padding: EdgeInsets.fromLTRB(5,3,5,3),
+            decoration: BoxDecoration(
+                  color: Color(0xFF34465d),
+            borderRadius: BorderRadius.all(
+                Radius.circular(12)),),
+                  child: Text("${products.amount}  ${products.productName}" + initAmount(),
+                    style: TextStyle(
+                            color:Colors.white
+                              ),
+                ));
   }
 
   Widget _jobDetails() {
@@ -291,7 +495,7 @@ class _CreateJobState extends State<CreateJob> {
               _buildFields('Customer Name - ${jobModel.cusName}'),
               _buildFields('Supervisor Name - ${userModel.userName}'),
               _buildFields('Service/Product Cost - Rs.${jobModel.procerCharge}0'),
-              _buildFields('Labour Charge - Rs.${jobModel.labourCharge}0'), 
+              _buildFields('Labour Charge - Rs.${jobModel.labourCharge}0'),
             ],
           ),
           Column(
@@ -310,21 +514,22 @@ class _CreateJobState extends State<CreateJob> {
                 // height: MediaQuery.of(context).size.height / 13,
                 // width: MediaQuery.of(context).size.width / 4.5,
                 decoration: BoxDecoration(
-                    color: Color(0xFF66BB6A),
+                    color: Color(0xFF6488E4),
                     borderRadius: BorderRadius.circular(12)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       "Task Count",
-                      style: TextStyle(color:Colors.white,fontWeight: FontWeight.w800),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,
                     ),
                     Text(
                       "${jobModel.taskCount}",
                       softWrap: true,
                       style: TextStyle(
-                          color:Colors.white,
+                          color: Colors.white,
                           fontFamily: 'OpenSans',
                           fontSize: 15.0,
                           fontWeight: FontWeight.w800),
@@ -337,18 +542,16 @@ class _CreateJobState extends State<CreateJob> {
               Container(
                 padding: const EdgeInsets.all(5.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFFef5350),
-                  borderRadius: BorderRadius.circular(12)
-                ),
+                    color: Color(0xFFef5350),
+                    borderRadius: BorderRadius.circular(12)),
                 child: Text(
-                        "Rs.${jobModel.total}0",
-                        style: TextStyle(
-                          fontFamily: 'OpenSans',
-                          color:Colors.white,
-                          fontWeight: FontWeight.w800
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                  "Rs.${jobModel.total}0",
+                  style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
@@ -390,9 +593,9 @@ class _CreateJobState extends State<CreateJob> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12))));
                 });
-                print("issssssssssss ${jobeka.procerCharge}");
-                print("issssssssssss ${jobeka.total}");
-                updateInformation(jobeka);
+            print("issssssssssss ${jobeka.procerCharge}");
+            print("issssssssssss ${jobeka.total}");
+            updateInformation(jobeka);
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -483,7 +686,7 @@ class IconLine extends BoxPainter {
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    final leftOffset = Offset((iconSize / 2) + 20 , offset.dy);
+    final leftOffset = Offset((iconSize / 2) + 10, offset.dy);
     final double iconSpace = iconSize / 1.8;
 
     final Offset top = configuration.size.topLeft(Offset(leftOffset.dx, 0.0));
