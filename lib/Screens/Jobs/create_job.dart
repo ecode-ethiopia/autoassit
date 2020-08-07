@@ -405,7 +405,7 @@ class _CreateJobState extends State<CreateJob> {
     Future gotoStatusPage(int index, BuildContext context) async {
        taskmodel = _listTasks[index];
       Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
-      Job jobeka = await showDialog(
+      showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {

@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/taskModel.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ChangeTaskStatus extends StatefulWidget {
   ChangeTaskStatus({Key key}) : super(key: key);
@@ -74,77 +79,52 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
         ),
         InkWell(
                     onTap: () async {
-                         print(taskmodel.status);
-                        //  if(serviceIndexes.isNotEmpty && prodIndexes.isNotEmpty){
-                        //         final body = {
-                        //     "jobId": jobModel.jobId,
-                        //     "jobNo": jobModel.jobno,
-                        //     "date": DateTime.now().toString(),
-                        //     "vnumber": jobModel.vNumber,
-                        //     "vName": jobModel.vName,
-                        //     "cusId": jobModel.cusId,
-                        //     "cusName": jobModel.cusName,
-                        //     "procerCharge": procerCharge.toString(),
-                        //     "labourCharge": "$labourCharge",
-                        //     "total": "$fullTaskCharge",
-                        //     "status": "on-Progress",
-                        //     "services": serviceIndexes,
-                        //     "products": prodIndexes,
-                        //     "token": userModel.token
-                        //   };
+                         if(status != "" && status != taskmodel.status){
 
-                        //   print(body);
+                                final body = {
+                            "_id": taskmodel.taskId,
+                            "status": "$status"
+                          };
 
-                        //   Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+                          print(body);
 
-                        //   final response = await http.post('${URLS.BASE_URL}/task/newtask',
-                        //       body: jsonEncode(body), headers: requestHeaders);
-                        //   print("workingggggggggggg");
-                        //   var data = response.body;
-                        //   // print(body);
-                        //   print(json.decode(data));
+                          Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
 
-                        //   Map<String, dynamic> res_data = jsonDecode(data);
+                          final response = await http.post('${URLS.BASE_URL}/task/updateTaskStatus',
+                              body: jsonEncode(body), headers: requestHeaders);
+                          print("workingggggggggggg");
+                          var data = response.body;
+                          // print(body);
+                          print(json.decode(data));
 
-                        //   try {
-                        //     if (response.statusCode == 200) {
-                        //       // clearcontrollers();
+                          Map<String, dynamic> res_data = jsonDecode(data);
+
+                          try {
+                            if (response.statusCode == 200) {
+                          
+                              setState(() {
+                                taskmodel.status = "$status";
+                              }); 
+                              Provider.of<TaskProvider>(context, listen: false).updateTaskStatus("$status");
+                              print("$status----");
                              
-                        //       // jobModel = Job.fromJson(res_data);
-                              
-                        //       setState(() {
-                        //       double totnow = double.parse(jobModel.total);
-                        //       int taskCountnw = int.parse(jobModel.taskCount);
-                        //       double procer = double.parse(jobModel.procerCharge);
-                        //       double labour = double.parse(jobModel.labourCharge);
-                        //       jobtot = totnow + fullTaskCharge;
-                        //       taskCount = taskCountnw + 1;
-                        //       jobProcerCharge = procer + procerCharge;
-                        //       joblabourCharge = labour + labourCharge;
-                        //       jobModel.taskCount = taskCount.toString();
-                        //       jobModel.total = jobtot.toString();
-                        //       jobModel.procerCharge = jobProcerCharge.toString();
-                        //       jobModel.labourCharge = joblabourCharge.toString();
-                        //       }); 
-                        //       Provider.of<JobProvider>(context, listen: false).updateTaskCountAndJobtot("$taskCount", "$jobtot");
-                        //       print("$taskCount----$jobtot");
-                             
-                        //       // Provider.of<JobProvider>(context, listen: false).startGetJobs();
-                        //       Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
-                        //        successDialog("Done", "Task added succefully");
+                              // Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                              Provider.of<TaskProvider>(context, listen: false).startGetTasks(taskmodel.jobId);
+                               successDialog("Done", "Status Updated succefully");
                    
-                        //     } else {
-                        //       // Dialogs.errorDialog(context, "F", "Something went wrong !");
-                        //       print("job coudlnt create !");
+                            } else {
+                              // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                              print("job coudlnt create !");
                               
-                        //     }
-                        //   } catch (e) {
-                        //     print(e);
-                        //   }
-                        //  }else{
-                        //    print("empty");
-                        //     Dialogs.errorDialog(context, "Error", "select services & products first !");
-                        //  }
+                            }
+                          } catch (e) {
+                            print(e);
+                          }
+                         }else{
+                           print("doesnt hve to update");
+                            // Dialogs.errorDialog(context, "Error", "select services & products first !");
+                            Navigator.of(context).pop();
+                         }
                     },
                     child: Container(
           height: MediaQuery.of(context).size.width / 10,
@@ -172,6 +152,20 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
    setState(() {
         status = val;
       });
+  }
+
+  Future<dynamic> successDialog(String title, String dec) {
+    return AwesomeDialog(
+            context: context,
+            dialogType: DialogType.SUCCES,
+            animType: AnimType.TOPSLIDE,
+            tittle: title,
+            desc: dec,
+            // btnCancelOnPress: () {},
+            btnOkOnPress: () {
+               Navigator.pop(context,taskmodel);
+            })
+        .show();
   }
 
   Widget taskStatus(String task, IconData iconData) {

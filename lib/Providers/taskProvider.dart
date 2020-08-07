@@ -51,5 +51,11 @@ class TaskProvider with ChangeNotifier {
     });
   }
 
+  void updateTaskStatus(String status) {
+   _taskModel.status = status;
+   print("job tot is ${_taskModel.status}");
+    notifyListeners();
+  }
+
 
 }
