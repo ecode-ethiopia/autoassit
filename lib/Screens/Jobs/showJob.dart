@@ -85,69 +85,6 @@ class _ShowJobState extends State<ShowJob> {
     print("updateddddddddd ${jobModel.labourCharge}-----$total");
   }
 
-  // void startCreateJobbbbbb() async {
-  //   SharedPreferences job = await SharedPreferences.getInstance();
-
-  //   final body = {
-  //     "jobNo": job.getString("jobno"),
-  //     "date": DateTime.now().toString(),
-  //     "vnumber": widget.vnumber,
-  //     "vName": widget.vehicle_name,
-  //     "cusId": widget.cusId,
-  //     "cusName": widget.customer_name,
-  //     "taskCount": "0",
-  //     "procerCharge": "0",
-  //     "labourCharge": "0",
-  //     "total": "0",
-  //     "status": "onGoing",
-  //     "token": userModel.token
-  //   };
-
-  //   print(body);
-
-  //   Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
-
-  //   final response = await http.post('${URLS.BASE_URL}/job/newjob',
-  //       body: jsonEncode(body), headers: requestHeaders);
-  //   print("workingggggggggggg");
-  //   var data = response.body;
-  //   // print(body);
-  //   print(json.decode(data));
-
-  //   Map<String, dynamic> res_data = jsonDecode(data);
-
-  //   try {
-  //     if (response.statusCode == 200) {
-  //       // clearcontrollers();
-  //       print("job created successfully !");
-  //       setState(() {
-  //         isJobCreating = false;
-  //       });
-  //       int no = int.parse(job.getString("jobno"));
-  //       setState(() {
-  //         no++;
-  //       });
-  //       job.setString("jobno", no.toString());
-  //       print(job.getString("jobno"));
-  //       jobModel = Job.fromJson(res_data);
-  //       Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
-  //       print("hutto");
-  //       Provider.of<JobProvider>(context, listen: false).startGetJobs();
-  //       Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
-  //       // getTasks();
-  //       // Dialogs.successDialog(context, "Done", "Job Created Successfully !");
-  //     } else {
-  //       // Dialogs.errorDialog(context, "F", "Something went wrong !");
-  //       print("job coudlnt create !");
-  //       setState(() {
-  //         isJobCreating = true;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
