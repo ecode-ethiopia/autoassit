@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_jobs_service.dart';
 import 'package:autoassit/Models/jobModel.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
@@ -21,6 +23,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
   List<Job> _jobList = [];
   bool isfetching = true;
   bool isEmpty = false;
+  Job jobmodel;
 
   @override
   void initState() {
@@ -99,15 +102,12 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                         borderRadius: BorderRadius.circular(10.0)),
                     child: GestureDetector(
                       onTap: () async {
-                        final jobid = _jobList[index].jobId;
-                        SharedPreferences jobs =
-                            await SharedPreferences.getInstance();
-                        jobs.setString("jobid", jobid);
-                        print("jobid set");
+                        // final jobid = _jobList[index].jobId;
+                        jobmodel = _jobList[index];
+                        Provider.of<JobProvider>(context, listen: false).jobModel = jobmodel;
+                        print(jobmodel.jobno);
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ShowJob(
-                                  jobid: jobid,
-                                )));
+                            builder: (context) => ShowJob()));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(top: 8.0, bottom: 8),
