@@ -163,7 +163,7 @@ class _CreateJobState extends State<CreateJob> {
               _mainContent(context),
             ]),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Color(0xFFef5350),
+        backgroundColor: Color(0xFF0D253F),
         onPressed: () {
           print(jobModel.jobno);
         },
@@ -258,15 +258,17 @@ class _CreateJobState extends State<CreateJob> {
        _listTasks = [];
     _listTasks = Provider.of<TaskProvider>(context).listTasks;
     if (_listTasks.isNotEmpty) {
-      setState(() {
-        isfetched = false;
+      isfetched = false;
         isEmpty = false;
-      });
+      // setState(() {
+        
+      // });
     }else{
-      setState(() {
-        isfetched = false;
+       isfetched = false;
         isEmpty = true;
-      });
+      // setState(() {
+       
+      // });
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +302,7 @@ class _CreateJobState extends State<CreateJob> {
                         height: MediaQuery.of(context).size.height / 1.2,
                         child: ListView.builder(
                           controller: _scrollController,
-                          padding: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.only(bottom:30),
                           shrinkWrap: true,
                           itemCount: _listTasks.length,
                           itemBuilder: (context, index) {
@@ -330,7 +332,7 @@ class _CreateJobState extends State<CreateJob> {
                                             )
                                           ]),
                                       child: Icon(
-                                        task.status == "onGoing"
+                                        task.status != "on-Progress"
                                             ? Icons.fiber_manual_record
                                             : Icons.radio_button_unchecked,
                                         size: 20,
@@ -430,10 +432,61 @@ class _CreateJobState extends State<CreateJob> {
                                                                       ),
                                                            ),
                                                   ),
+                                                   Container(
+                                                 padding: EdgeInsets.all(5),
+                                                 decoration: BoxDecoration(
+                                                   color:task.status == 'on-Progress'? Color(0xFF4CAF50):Color(0xFFef5350),
+                                                   borderRadius: BorderRadius.all(
+                                                          Radius.circular(12))),
+                                                 child: Row(
+                                                   mainAxisAlignment: MainAxisAlignment.center,
+                                                   children: [
+                                                     Icon(
+                                                     task.status == 'on-Progress'? Icons.access_time : Icons.done_outline,
+                                                      size: 18,
+                                                      color: Colors.white,
+                                                     ),
+                                                     SizedBox(width: 5,),
+                                                     Text(task.status == 'on-Progress'? "This Task is ${task.status}":"Completed",
+                                                     style: TextStyle(
+                                                       color:Colors.white,
+                                                       fontWeight:FontWeight.w600,
+                                                       fontSize: 15
+                                                     ),
+                                                     ),
+                                                   ],
+                                                 )),
                                             ],
                                           ),
                                         ),
                                       ),
+                                      //  Positioned(
+                                      //          top: MediaQuery.of(context).size.height / 7.5,
+                                      //          left:MediaQuery.of(context).size.width / 2,
+                                      //          child: Container(
+                                      //            padding: EdgeInsets.all(5),
+                                      //            decoration: BoxDecoration(
+                                      //              color: Color(0xFF4CAF50),
+                                      //              borderRadius: BorderRadius.all(
+                                      //                     Radius.circular(12))),
+                                      //            child: Row(
+                                      //              children: [
+                                      //                Icon(
+                                      //                task.status == 'onGoing'? Icons.access_time : Icons.done_outline,
+                                      //                 size: 18,
+                                      //                 color: Colors.white,
+                                      //                ),
+                                      //                SizedBox(width: 5,),
+                                      //                Text(task.status == 'onGoing'? "${task.status}":"Done",
+                                      //                style: TextStyle(
+                                      //                  color:Colors.white,
+                                      //                  fontWeight:FontWeight.w600,
+                                      //                  fontSize: 15
+                                      //                ),
+                                      //                ),
+                                      //              ],
+                                      //            )),
+                                      //        ),
                                 ],
                                     ),
                                   )

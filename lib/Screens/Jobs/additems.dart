@@ -289,7 +289,7 @@ Future<bool> onbackpress(){
                             "procerCharge": procerCharge.toString(),
                             "labourCharge": "$labourCharge",
                             "total": "$fullTaskCharge",
-                            "status": "onGoing",
+                            "status": "on-Progress",
                             "services": serviceIndexes,
                             "products": prodIndexes,
                             "token": userModel.token
