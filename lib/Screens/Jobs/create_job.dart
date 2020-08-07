@@ -8,6 +8,7 @@ import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/change_task_page.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
@@ -39,6 +40,7 @@ class _CreateJobState extends State<CreateJob> {
   String currentDate;
   int jobval;
   UserModel userModel;
+  TaskModel taskmodel;
   Job jobModel;
   bool isJobCreating = true;
   List<TaskModel> _listTasks = [];
@@ -176,21 +178,21 @@ class _CreateJobState extends State<CreateJob> {
     );
   }
 
-  Widget _mainContent(BuildContext context) {
+    Widget _mainContent(BuildContext context) {
        _listTasks = [];
     _listTasks = Provider.of<TaskProvider>(context).listTasks;
     if (_listTasks.isNotEmpty) {
-      isfetched = false;
+      
+      setState(() {
+        isfetched = false;
         isEmpty = false;
-      // setState(() {
-        
-      // });
+      });
     }else{
+       
+      setState(() {
        isfetched = false;
         isEmpty = true;
-      // setState(() {
-       
-      // });
+      });
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,113 +278,128 @@ class _CreateJobState extends State<CreateJob> {
                                     ],
                                   ),
                                   Expanded(
-                                    child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 12.0),
-                                        child: Container(
-                                          padding: const EdgeInsets.fromLTRB(14.0,0,14.0,14.0),
+                                    child: InkWell(
+                                      onTap: ()  async {
+                                        taskmodel = _listTasks[index];
+                                        Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
+                                        Job jobeka = await showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                  child: ChangeTaskStatus(),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.all(Radius.circular(12))));
+                                            });
+                                      },
+                                                                          child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 12.0),
+                                          child: Container(
+                                            padding: const EdgeInsets.fromLTRB(14.0,0,14.0,14.0),
+                                            decoration: BoxDecoration(
+                                                   color: Color(0xFFFFE4C7),
+                                       borderRadius: BorderRadius.all(
+                                           Radius.circular(12)),
+                                       boxShadow: [
+                                         BoxShadow(
+                                             color: Color(0x20000000),
+                                             blurRadius: 5,
+                                             offset: Offset(0, 7))
+                                       ]),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                       Row(
+                                         mainAxisAlignment: MainAxisAlignment.start,
+                                         // crossAxisAlignment: CrossAxisAlignment.start,
+                                           children: <Widget>[
+                                            Expanded(
+                                              child: ListView.builder(
+                                                controller: _scrollController,
+                                                shrinkWrap: true,
+                                                itemCount: task.services.length,
+                                                itemBuilder: (context, index2){
+                                                  var services = task.services[index2];
+                                                  return Text("${services.serviceName} [ LC - Rs. ${services.labourCharge}]",
+                                                      style: TextStyle(
+                                                           fontSize: 12,
+                                                           fontWeight: FontWeight.w600,
+                                                           fontFamily: 'Montserrat',
+                                                             ),
+                                                  );
+                                                }),
+                                            ),
+                                           ]),
+                                           SizedBox(height: 5,),
+                                           Container(
+                                             margin: EdgeInsets.only(bottom:5),
+                                             child: Text("Products Cost [ Rs. ${task.procerCharge}0 ]",
+                                                        style: TextStyle(
+                                                             fontSize: 12,
+                                                             fontWeight: FontWeight.w600,
+                                                             fontFamily: 'Montserrat',
+                                                               ),
+                                                    ),
+                                           ),
+                                           SizedBox(
+                                             height: 35,
+                                             // width: MediaQuery.of(context).size.width /2,
+                                              child: ListView.builder(
+                                                controller: _scrollController,
+                                                scrollDirection: Axis.horizontal,
+                                                shrinkWrap: true,
+                                                itemCount: task.products.length,
+                                                itemBuilder: (context, index3){
+                                                  var products = task.products[index3];
+                                                  return Wrap(
+                                             direction: Axis.vertical,
+                                                    children:<Widget> [
+                                                      buildProductChip(products),
+                                                    ],
+                                                  );
+                                                }),
+                                            ),
+                                            Container(
+                                             margin: EdgeInsets.only(bottom:5),
+                                             child: Text("Total Cost [ Rs. ${task.total}0 ]",
+                                                        style: TextStyle(
+                                                             fontSize: 12,
+                                                             fontWeight: FontWeight.w600,
+                                                             fontFamily: 'Montserrat',
+                                                             backgroundColor: Colors.amber
+                                                               ),
+                                                    ),
+                                           ),
+                                            Container(
+                                          padding: EdgeInsets.all(5),
                                           decoration: BoxDecoration(
-                                                 color: Color(0xFFFFE4C7),
-                                     borderRadius: BorderRadius.all(
-                                         Radius.circular(12)),
-                                     boxShadow: [
-                                       BoxShadow(
-                                           color: Color(0x20000000),
-                                           blurRadius: 5,
-                                           offset: Offset(0, 7))
-                                     ]),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            color:task.status == 'on-Progress'? Color(0xFF4CAF50):Color(0xFFef5350),
+                                            borderRadius: BorderRadius.all(
+                                                   Radius.circular(12))),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                     Row(
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       // crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: <Widget>[
-                                          Expanded(
-                                            child: ListView.builder(
-                                              controller: _scrollController,
-                                              shrinkWrap: true,
-                                              itemCount: task.services.length,
-                                              itemBuilder: (context, index2){
-                                                var services = task.services[index2];
-                                                return Text("${services.serviceName} [ LC - Rs. ${services.labourCharge}]",
-                                                    style: TextStyle(
-                                                         fontSize: 12,
-                                                         fontWeight: FontWeight.w600,
-                                                         fontFamily: 'Montserrat',
-                                                           ),
-                                                );
-                                              }),
-                                          ),
-                                         ]),
-                                         SizedBox(height: 5,),
-                                         Container(
-                                           margin: EdgeInsets.only(bottom:5),
-                                           child: Text("Products Cost [ Rs. ${task.procerCharge}0 ]",
-                                                      style: TextStyle(
-                                                           fontSize: 12,
-                                                           fontWeight: FontWeight.w600,
-                                                           fontFamily: 'Montserrat',
-                                                             ),
-                                                  ),
-                                         ),
-                                         SizedBox(
-                                           height: 35,
-                                           // width: MediaQuery.of(context).size.width /2,
-                                            child: ListView.builder(
-                                              controller: _scrollController,
-                                              scrollDirection: Axis.horizontal,
-                                              shrinkWrap: true,
-                                              itemCount: task.products.length,
-                                              itemBuilder: (context, index3){
-                                                var products = task.products[index3];
-                                                return Wrap(
-                                           direction: Axis.vertical,
-                                                  children:<Widget> [
-                                                    buildProductChip(products),
-                                                  ],
-                                                );
-                                              }),
-                                          ),
-                                          Container(
-                                           margin: EdgeInsets.only(bottom:5),
-                                           child: Text("Total Cost [ Rs. ${task.total}0 ]",
-                                                      style: TextStyle(
-                                                           fontSize: 12,
-                                                           fontWeight: FontWeight.w600,
-                                                           fontFamily: 'Montserrat',
-                                                           backgroundColor: Colors.amber
-                                                             ),
-                                                  ),
-                                         ),
-                                          Container(
-                                        padding: EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color:task.status == 'on-Progress'? Color(0xFF4CAF50):Color(0xFFef5350),
-                                          borderRadius: BorderRadius.all(
-                                                 Radius.circular(12))),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                            task.status == 'on-Progress'? Icons.access_time : Icons.done_outline,
-                                             size: 18,
-                                             color: Colors.white,
-                                            ),
-                                            SizedBox(width: 5,),
-                                            Text(task.status == 'on-Progress'? "This Task is ${task.status}":"Completed",
-                                            style: TextStyle(
-                                              color:Colors.white,
-                                              fontWeight:FontWeight.w600,
-                                              fontSize: 14
-                                            ),
-                                            ),
-                                          ],
-                                        )),
+                                              Icon(
+                                              task.status == 'on-Progress'? Icons.access_time : Icons.done_outline,
+                                               size: 18,
+                                               color: Colors.white,
+                                              ),
+                                              SizedBox(width: 5,),
+                                              Text(task.status == 'on-Progress'? "This Task is ${task.status}":"Completed",
+                                              style: TextStyle(
+                                                color:Colors.white,
+                                                fontWeight:FontWeight.w600,
+                                                fontSize: 14
+                                              ),
+                                              ),
                                             ],
+                                          )),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                    ),
                                   )
                                 ],
                               ),
