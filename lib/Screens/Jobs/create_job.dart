@@ -347,7 +347,9 @@ class _CreateJobState extends State<CreateJob> {
                                           child: Padding(
                                             padding:
                                                 const EdgeInsets.only(left: 5.0),
-                                            child: Text("Task ${index + 1} -"),
+                                            child: Text("Task ${index + 1} -",
+                                             style: TextStyle(fontWeight: FontWeight.w800,),
+                                            ),
                                           )),
                                     ],
                                   ),
@@ -385,7 +387,7 @@ class _CreateJobState extends State<CreateJob> {
                                                          var services = task.services[index2];
                                                          return Text("${services.serviceName} [ LC - Rs. ${services.labourCharge}]",
                                                              style: TextStyle(
-                                                                  fontSize: 14,
+                                                                  fontSize: 12,
                                                                   fontWeight: FontWeight.w600,
                                                                   fontFamily: 'Montserrat',
                                                                     ),
@@ -398,7 +400,7 @@ class _CreateJobState extends State<CreateJob> {
                                                     margin: EdgeInsets.only(bottom:5),
                                                     child: Text("Products Cost [ Rs. ${task.procerCharge}0 ]",
                                                                style: TextStyle(
-                                                                    fontSize: 14,
+                                                                    fontSize: 12,
                                                                     fontWeight: FontWeight.w600,
                                                                     fontFamily: 'Montserrat',
                                                                       ),
@@ -426,9 +428,10 @@ class _CreateJobState extends State<CreateJob> {
                                                     margin: EdgeInsets.only(bottom:5),
                                                     child: Text("Total Cost [ Rs. ${task.total}0 ]",
                                                                style: TextStyle(
-                                                                    fontSize: 14,
+                                                                    fontSize: 12,
                                                                     fontWeight: FontWeight.w600,
                                                                     fontFamily: 'Montserrat',
+                                                                    backgroundColor: Colors.amber
                                                                       ),
                                                            ),
                                                   ),
@@ -451,7 +454,7 @@ class _CreateJobState extends State<CreateJob> {
                                                      style: TextStyle(
                                                        color:Colors.white,
                                                        fontWeight:FontWeight.w600,
-                                                       fontSize: 15
+                                                       fontSize: 14
                                                      ),
                                                      ),
                                                    ],
@@ -519,7 +522,8 @@ class _CreateJobState extends State<CreateJob> {
                 Radius.circular(12)),),
                   child: Text("${products.amount}  ${products.productName}" + initAmount(),
                     style: TextStyle(
-                            color:Colors.white
+                            color:Colors.white,
+                            fontSize: 13
                               ),
                 ));
   }
@@ -567,7 +571,7 @@ class _CreateJobState extends State<CreateJob> {
                 // height: MediaQuery.of(context).size.height / 13,
                 // width: MediaQuery.of(context).size.width / 4.5,
                 decoration: BoxDecoration(
-                    color: Color(0xFF6488E4),
+                    color: Color(0xFF34465d),
                     borderRadius: BorderRadius.circular(12)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
