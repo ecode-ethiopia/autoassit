@@ -214,17 +214,7 @@ class _ShowJobState extends State<ShowJob> {
                                   Expanded(
                                     child: InkWell(
                                       onTap: ()  async {
-                                        taskmodel = _listTasks[index];
-                                        Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
-                                        Job jobeka = await showDialog(
-                                            barrierDismissible: false,
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Dialog(
-                                                  child: ChangeTaskStatus(),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.all(Radius.circular(12))));
-                                            });
+                                        await gotoStatusPage(index, context);
                                       },
                                                                           child: Padding(
                                           padding: const EdgeInsets.only(
@@ -344,6 +334,20 @@ class _ShowJobState extends State<ShowJob> {
             )
       ],
     );
+  }
+
+  Future gotoStatusPage(int index, BuildContext context) async {
+     taskmodel = _listTasks[index];
+    Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
+    Job jobeka = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: ChangeTaskStatus(),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12))));
+        });
   }
 
   Widget buildProductChip(ProductModel products) {
