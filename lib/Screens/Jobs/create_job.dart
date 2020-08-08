@@ -109,6 +109,7 @@ class _CreateJobState extends State<CreateJob> {
       "cusId": widget.cusId,
       "cusName": widget.customer_name,
       "taskCount": "0",
+      "completeTaskCount": "0",
       "procerCharge": "0",
       "labourCharge": "0",
       "total": "0",

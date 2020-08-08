@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/taskModel.dart';
+import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class ChangeTaskStatus extends StatefulWidget {
 
 class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
   String status = "";
+  String comTaskCount = "";
   TaskModel taskmodel;
 
   @override
@@ -86,7 +88,11 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
         InkWell(
           onTap: () async {
             if (status != "" && status != taskmodel.status) {
-              final body = {"_id": taskmodel.taskId, "status": "$status"};
+              final body = {
+                "_id": taskmodel.taskId, 
+                "status": "$status",
+                "jobId": taskmodel.jobId
+                };
 
               print(body);
 
@@ -109,10 +115,14 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
                 if (response.statusCode == 200) {
                   setState(() {
                     taskmodel.status = "$status";
+                    comTaskCount = res_data['completeTaskCount'];
                   });
                   Provider.of<TaskProvider>(context, listen: false)
                       .updateTaskStatus("$status");
-                  print("$status----");
+
+                  Provider.of<JobProvider>(context, listen: false)
+                      .updateComTaskCount("$comTaskCount");
+                  print("$status----$comTaskCount");
 
                   // Provider.of<JobProvider>(context, listen: false).startGetJobs();
                   Provider.of<TaskProvider>(context, listen: false)

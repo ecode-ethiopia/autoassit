@@ -37,8 +37,9 @@ class TaskProvider with ChangeNotifier {
       print("getting taksssssssssssssssss ");
       // print(res.body);
       var convertedData = convert.jsonDecode(res.body);
-      print(convertedData);
+      // print(convertedData);
         List data = convertedData;
+        print(data.length);
 
         _taskList = data.map((item) => TaskModel.fromJson(item)).toList();
 

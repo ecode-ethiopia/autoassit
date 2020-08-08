@@ -9,6 +9,7 @@ class Job with ChangeNotifier {
   String cusId;
   String cusName;
   String taskCount;
+  String completeTaskCount;
   String procerCharge;
   String labourCharge;
   String total;
@@ -26,6 +27,7 @@ class Job with ChangeNotifier {
       this.cusId,
       this.cusName,
       this.taskCount,
+      this.completeTaskCount,
       this.procerCharge,
       this.labourCharge,
       this.total,
@@ -44,6 +46,7 @@ Job.fromJson(Map<String, dynamic> map)
       cusId= map["cusId"],
       cusName= map["cusName"],
       taskCount= map["taskCount"],
+      completeTaskCount = map["completeTaskCount"],
       total= map["total"],
       procerCharge= map["procerCharge"],
       labourCharge= map["labourCharge"],

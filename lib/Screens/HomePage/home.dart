@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage>
   String welcome_msg;
   String username;
   UserModel userModel;
+  ScrollController _scrollController;
 
   @override
   Future<void> initState() {
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage>
     tabController = TabController(vsync: this, length: 4);
     welcome_msg = Utils.getWelcomeMessage();
     userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
+    _scrollController = ScrollController();
 
     super.initState();
   }
@@ -214,7 +216,9 @@ class _HomePageState extends State<HomePage>
       initiallyExpanded: true,
       children: <Widget>[
         Container(
-                child: ProjectCardTile(),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: ProjectCardTile()),
               )
       ],
     );

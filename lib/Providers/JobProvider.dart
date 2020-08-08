@@ -60,5 +60,11 @@ class JobProvider with ChangeNotifier {
     notifyListeners();
   }
 
+   void updateComTaskCount(String taskCount) {
+   _jobModel.completeTaskCount = taskCount;
+   print("job tot is ${_jobModel.completeTaskCount}");
+    notifyListeners();
+  }
+
 
 }
