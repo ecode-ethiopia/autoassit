@@ -10,6 +10,7 @@ import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/change_task_status_page.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/deleteTask_ModelBox.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/delete_job_model.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
@@ -179,7 +180,7 @@ class _CreateJobState extends State<CreateJob> {
         onPressed: () {
           print(jobModel.jobno);
         },
-        label: Text('Create Invoice'),
+        label: Text('Finish Job'),
         icon: Icon(Icons.receipt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -609,9 +610,10 @@ class _CreateJobState extends State<CreateJob> {
           color: Colors.white,
           textColor: Color(0xFFef5350),
           onPressed: () async {
-            SharedPreferences job = await SharedPreferences.getInstance();
-            job.remove("jobno");
-            print("cleared");
+            // SharedPreferences job = await SharedPreferences.getInstance();
+            // job.remove("jobno");
+            // print("cleared");
+            gotoDeleteJob(context);
           },
           shape: RoundedRectangleBorder(
               side: BorderSide(color: Color(0xFFef5350)),
@@ -621,6 +623,19 @@ class _CreateJobState extends State<CreateJob> {
         ),
       )
     ]);
+  }
+
+   Future gotoDeleteJob(BuildContext context) async {
+
+  await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: DeleteJobBox(),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12))));
+        });
   }
 
   BottomAppBar buildBottomAppBar() {

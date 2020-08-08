@@ -1,4 +1,5 @@
 import 'package:autoassit/Screens/HomePage/homeWidgets/project_card_tile.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/finished_jobList.dart';
 import 'package:flutter/material.dart';
 
 class JobRecords extends StatefulWidget {
@@ -44,8 +45,8 @@ class _JobRecordsState extends State<JobRecords>
     return TabBarView(
       controller: tabController,
       children: <Widget>[
-        FollowersContent(),
-        FollowingContent(),
+        OngoingJobsContent(),
+        FinishedJobContent(),
       ],
     );
   }
@@ -79,7 +80,7 @@ class _JobRecordsState extends State<JobRecords>
   }
 }
 
-class FollowersContent extends StatelessWidget {
+class OngoingJobsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -89,29 +90,11 @@ class FollowersContent extends StatelessWidget {
         color: Colors.white,
       ),
       child: ProjectCardTile()
-      
-      // ListView(
-      //   children: <Widget>[
-      //     Text("ongoing"),
-      //     Text("ongoing"),
-      //     Text("ongoing"),
-      //     Text("ongoing"),
-      //     Text("ongoing"),
-      //     Text("ongoing"),
-      //     Text("ongoing"),
-      //     // UserCardItem(),
-      //     // UserCardItem(),
-      //     // UserCardItem(),
-      //     // UserCardItem(),
-      //     // UserCardItem(),
-      //     // UserCardItem(),
-      //   ],
-      // ),
     );
   }
 }
 
-class FollowingContent extends StatelessWidget {
+class FinishedJobContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -120,19 +103,7 @@ class FollowingContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         color: Colors.white,
       ),
-      child: ListView(
-        children: <Widget>[
-        Text("completed"),
-        Text("completed"),
-        Text("completed"),
-        Text("completed"),
-        Text("completed"),
-        Text("completed"),
-        Text("completed"),
-        Text("completed"),
-
-        ],
-      ),
+      child: FinishedJobList()
     );
   }
 }

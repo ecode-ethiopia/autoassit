@@ -10,6 +10,8 @@ import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/change_task_status_page.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/deleteTask_ModelBox.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/delete_job_model.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/finish_job_model.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
@@ -111,13 +113,32 @@ class _ShowJobState extends State<ShowJob> {
         backgroundColor: Color(0xFF0D253F),
         onPressed: () {
           print(jobModel.jobno);
+          gotoFinishJob(context);
         },
-        label: Text('Create Invoice'),
-        icon: Icon(Icons.receipt),
+        label: Text('Finish Job'),
+        icon: Icon(Icons.done_all),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: buildBottomAppBar(),
     );
+  }
+
+    Future gotoFinishJob(BuildContext context) async {
+      if(jobModel.status == 'finished'){
+        showFinishedDialog();
+      }else{
+        await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: FinishedJobBox(),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12))));
+        });
+      }
+
+  
   }
 
   Widget _mainContent(BuildContext context) {
@@ -509,7 +530,10 @@ class _ShowJobState extends State<ShowJob> {
           color: Color(0xFFef5350),
           textColor: Colors.white,
           onPressed: () async {
-            Job jobeka = await showDialog(
+            if(jobModel.status == 'finished'){
+              showFinishedDialog();
+            }else{
+                Job jobeka = await showDialog(
                 barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
@@ -527,6 +551,8 @@ class _ShowJobState extends State<ShowJob> {
             print("issssssssssss ${jobeka.procerCharge}");
             print("issssssssssss ${jobeka.total}");
             updateInformation(jobeka);
+            }
+          
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -542,9 +568,10 @@ class _ShowJobState extends State<ShowJob> {
           color: Colors.white,
           textColor: Color(0xFFef5350),
           onPressed: () async {
-            SharedPreferences job = await SharedPreferences.getInstance();
-            job.remove("jobno");
-            print("cleared");
+            // SharedPreferences job = await SharedPreferences.getInstance();
+            // job.remove("jobno");
+            // print("cleared");
+            gotoDeleteJob(context);
           },
           shape: RoundedRectangleBorder(
               side: BorderSide(color: Color(0xFFef5350)),
@@ -554,6 +581,46 @@ class _ShowJobState extends State<ShowJob> {
         ),
       )
     ]);
+  }
+
+  showFinishedDialog(){
+    showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Sorry, You can't !"),
+              content: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height / 8,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "This is already a finished job !",
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 35,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+  }
+
+  Future gotoDeleteJob(BuildContext context) async {
+
+  await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: DeleteJobBox(),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12))));
+        });
   }
 
   BottomAppBar buildBottomAppBar() {

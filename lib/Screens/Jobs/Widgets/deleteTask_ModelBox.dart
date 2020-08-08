@@ -99,27 +99,6 @@ class _DeleteTaskBoxState extends State<DeleteTaskBox> {
               ),
             ],
           ),
-          // InkWell(
-          //   onTap: () async {
-
-          //   },
-          //   child: Container(
-          //     height: MediaQuery.of(context).size.width / 10,
-          //     width: MediaQuery.of(context).size.width / 2,
-          //     decoration: BoxDecoration(
-          //         gradient: LinearGradient(
-          //           colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
-          //         ),
-          //         borderRadius: BorderRadius.all(Radius.circular(50))),
-          //     child: Center(
-          //       child: Text(
-          //         'Update Status'.toUpperCase(),
-          //         style:
-          //             TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          //       ),
-          //     ),
-          //   ),
-          // ),
           SizedBox(
             height: 15,
           ),
