@@ -27,7 +27,7 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
     initStatus();
   }
 
-  initStatus(){
+  initStatus() {
     setState(() {
       status = taskmodel.status;
     });
@@ -39,181 +39,160 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-         Padding(
-                  padding: const EdgeInsets.only(top:20.0,bottom: 20),
-                  child: Center(
-                      child: Text(
-                    "Update Task Status",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
-                  )),
-                ),
-        GestureDetector(
-                onTap: () {
-                  initFoodCats("on-Progress");
-                  print("status is $status");
-                },
-                  child: taskStatus(
-                    'On-Progress',
-                   status== "on-Progress"? Icons.radio_button_checked:Icons.radio_button_unchecked,
-                  ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+          child: Center(
+              child: Text(
+            "Update Task Status",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+          )),
         ),
         GestureDetector(
-                onTap: () {
-                  initFoodCats("Completed");
-                  print("status is $status");
-                },
-                  child: taskStatus(
-            'Completed',
-            status== "Completed"? Icons.radio_button_checked:Icons.radio_button_unchecked,
+          onTap: () {
+            initFoodCats("on-Progress");
+            print("status is $status");
+          },
+          child: taskStatus(
+            'On-Progress',
+            status == "on-Progress"
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
           ),
         ),
         GestureDetector(
-                onTap: () {
-                  initFoodCats("Aborted");
-                  print("status is $status");
-                },
-                  child: taskStatus(
+          onTap: () {
+            initFoodCats("Completed");
+            print("status is $status");
+          },
+          child: taskStatus(
+            'Completed',
+            status == "Completed"
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            initFoodCats("Aborted");
+            print("status is $status");
+          },
+          child: taskStatus(
             'Aborted',
-            status== "Aborted"? Icons.radio_button_checked:Icons.radio_button_unchecked,
+            status == "Aborted"
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
           ),
         ),
         InkWell(
-                    onTap: () async {
-                         if(status != "" && status != taskmodel.status){
+          onTap: () async {
+            if (status != "" && status != taskmodel.status) {
+              final body = {"_id": taskmodel.taskId, "status": "$status"};
 
-                                final body = {
-                            "_id": taskmodel.taskId,
-                            "status": "$status"
-                          };
+              print(body);
 
-                          print(body);
+              Map<String, String> requestHeaders = {
+                'Content-Type': 'application/json'
+              };
 
-                          Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+              final response = await http.post(
+                  '${URLS.BASE_URL}/task/updateTaskStatus',
+                  body: jsonEncode(body),
+                  headers: requestHeaders);
+              print("workingggggggggggg");
+              var data = response.body;
+              // print(body);
+              print(json.decode(data));
 
-                          final response = await http.post('${URLS.BASE_URL}/task/updateTaskStatus',
-                              body: jsonEncode(body), headers: requestHeaders);
-                          print("workingggggggggggg");
-                          var data = response.body;
-                          // print(body);
-                          print(json.decode(data));
+              Map<String, dynamic> res_data = jsonDecode(data);
 
-                          Map<String, dynamic> res_data = jsonDecode(data);
+              try {
+                if (response.statusCode == 200) {
+                  setState(() {
+                    taskmodel.status = "$status";
+                  });
+                  Provider.of<TaskProvider>(context, listen: false)
+                      .updateTaskStatus("$status");
+                  print("$status----");
 
-                          try {
-                            if (response.statusCode == 200) {
-                          
-                              setState(() {
-                                taskmodel.status = "$status";
-                              }); 
-                              Provider.of<TaskProvider>(context, listen: false).updateTaskStatus("$status");
-                              print("$status----");
-                             
-                              // Provider.of<JobProvider>(context, listen: false).startGetJobs();
-                              Provider.of<TaskProvider>(context, listen: false).startGetTasks(taskmodel.jobId);
-                               successDialog("Done", "Status Updated succefully");
-                   
-                            } else {
-                              // Dialogs.errorDialog(context, "F", "Something went wrong !");
-                              print("job coudlnt create !");
-                              
-                            }
-                          } catch (e) {
-                            print(e);
-                          }
-                         }else{
-                           print("doesnt hve to update");
-                            // Dialogs.errorDialog(context, "Error", "select services & products first !");
-                            Navigator.of(context).pop();
-                         }
-                    },
-                    child: Container(
-          height: MediaQuery.of(context).size.width / 10,
-          width: MediaQuery.of(context).size.width / 2,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                  // Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                  Provider.of<TaskProvider>(context, listen: false)
+                      .startGetTasks(taskmodel.jobId);
+                  successDialog("Done", "Status Updated succefully");
+                } else {
+                  // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                  print("job coudlnt create !");
+                }
+              } catch (e) {
+                print(e);
+              }
+            } else {
+              print("doesnt hve to update");
+              // Dialogs.errorDialog(context, "Error", "select services & products first !");
+              Navigator.of(context).pop();
+            }
+          },
+          child: Container(
+            height: MediaQuery.of(context).size.width / 10,
+            width: MediaQuery.of(context).size.width / 2,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: Center(
+              child: Text(
+                'Update Status'.toUpperCase(),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
-              borderRadius: BorderRadius.all(Radius.circular(50))),
-          child: Center(
-            child: Text(
-              'Update Status'.toUpperCase(),
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
-        ),),
-         SizedBox(
-                  height: 15,
-                ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
       ],
     );
   }
 
   initFoodCats(String val) {
-   setState(() {
-        status = val;
-      });
+    setState(() {
+      status = val;
+    });
   }
 
   Future<dynamic> successDialog(String title, String dec) {
     return AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            animType: AnimType.TOPSLIDE,
-            tittle: title,
-            desc: dec,
-            // btnCancelOnPress: () {},
-            btnOkOnPress: () {
-               Navigator.pop(context,taskmodel);
-            })
-        .show();
+        context: context,
+        dialogType: DialogType.SUCCES,
+        animType: AnimType.TOPSLIDE,
+        tittle: title,
+        desc: dec,
+        // btnCancelOnPress: () {},
+        btnOkOnPress: () {
+          Navigator.pop(context, taskmodel);
+        }).show();
   }
 
   Widget taskStatus(String task, IconData iconData) {
     return Padding(
-           padding: const EdgeInsets.only(left:20.0,bottom: 24.0),
-           child: Row(
-             children:<Widget>[
-               Icon(
-                 iconData,
-                 color: Color(0xFFef5350),
-                 size: 20,
-               ),
-               SizedBox(
-                 width: 28,
-               ),
-               Text(task,
-                style: TextStyle(
-                  fontSize:17,
-                ),
-               )
-             ]
-           ),
-         );
-  }
-
-   Widget _taskCompleteList(String task) {
-    return Container(
-      foregroundDecoration: BoxDecoration(color: Color(0x60FDFDFD)),
-      child: Padding(
-             padding: const EdgeInsets.only(left:20.0,top: 20.0),
-             child: Row(
-               children:<Widget>[
-                 Icon(
-                   Icons.radio_button_checked,
-                   color:Color(0xFFef5350),
-                   size: 20,
-                 ),
-                 SizedBox(
-                   width: 28,
-                 ),
-                 Text(task,
-                  style: TextStyle(
-                    fontSize:17,
-                  ),
-                 )
-               ]
-             ),
-           ),
+      padding: const EdgeInsets.only(left: 20.0, bottom: 24.0),
+      child: Row(children: <Widget>[
+        Icon(
+          iconData,
+          color: Color(0xFFef5350),
+          size: 20,
+        ),
+        SizedBox(
+          width: 28,
+        ),
+        Text(
+          task,
+          style: TextStyle(
+            fontSize: 17,
+          ),
+        )
+      ]),
     );
   }
 }

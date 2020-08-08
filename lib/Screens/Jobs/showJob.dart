@@ -9,6 +9,7 @@ import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/change_task_page.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/deleteTask_ModelBox.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
@@ -67,6 +68,13 @@ class _ShowJobState extends State<ShowJob> {
     });
     print(jobModel.total);
     startUpdateJobDetails(jobb.taskCount, jobb.total);
+  }
+
+   void updateJobModel(Job jobb) {
+    setState(() {
+      jobModel = jobb;
+    });
+    print(jobModel.total);
   }
 
   void startUpdateJobDetails(String taskCount, String total) async {
@@ -216,6 +224,9 @@ class _ShowJobState extends State<ShowJob> {
                                       onTap: ()  async {
                                         await gotoStatusPage(index, context);
                                       },
+                                      onLongPress: () async {
+                                         await gotoDeleteTaskPage(index, context);
+                                      },
                                                                           child: Padding(
                                           padding: const EdgeInsets.only(
                                               bottom: 12.0),
@@ -348,6 +359,23 @@ class _ShowJobState extends State<ShowJob> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))));
         });
+  }
+
+  Future gotoDeleteTaskPage(int index, BuildContext context) async {
+     taskmodel = _listTasks[index];
+    Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
+   Job jobeka = await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: DeleteTaskBox(),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12))));
+        });
+        print("issssssssssss ${jobeka.procerCharge}");
+        print("issssssssssss ${jobeka.total}");
+    updateJobModel(jobeka);
   }
 
   Widget buildProductChip(ProductModel products) {
