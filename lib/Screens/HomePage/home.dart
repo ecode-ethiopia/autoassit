@@ -233,10 +233,10 @@ class _HomePageState extends State<HomePage>
       margin: const EdgeInsets.only(left: 20.0),
       padding: const EdgeInsets.all(5.0),
       child: Text(
-        "$welcome_msg"+ "\n"+ "${userModel.userName}",
+        "$welcome_msg"+ "\n"+ "${userModel.userName} / ${userModel.garageName}",
         style: TextStyle(
             fontFamily: 'Montserrat',
-            fontSize: 15.0,
+            fontSize: 13.0,
             fontWeight: FontWeight.w900),
       ),
     );

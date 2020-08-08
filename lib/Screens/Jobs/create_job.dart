@@ -8,7 +8,7 @@ import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
-import 'package:autoassit/Screens/Jobs/Widgets/change_task_page.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/change_task_status_page.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/deleteTask_ModelBox.dart';
 import 'package:autoassit/Utils/jobCreatingLoader.dart';
 import 'package:flutter/material.dart';
