@@ -93,7 +93,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                   ),
                 ),
             )
-            : isEmpty ? Text("empty hutto"): Column(
+            : isEmpty ? Text("No ongoing jobs"): Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListView.builder(
