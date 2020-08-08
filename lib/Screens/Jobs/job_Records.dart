@@ -22,21 +22,125 @@ class _JobRecordsState extends State<JobRecords>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      // appBar: SearchAppBar(
-      //   color1: Colors.grey[100],
-      //   color2: Colors.white,
-      // ),
+      appBar: _buildTopAppbar(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             decoration: BoxDecoration(color: Colors.transparent),
-            child: _buildTabBar(context),
+            child: Center(child: _buildTabBar(context)),
           ),
           Flexible(
             child: _buildTabView(context),
           ),
         ],
+      ),
+    );
+  }
+
+   Widget _buildTopAppbar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(120.0),
+      child: Container(
+        color: Colors.transparent,
+        // height: MediaQuery.of(context).size.height / 2,
+        alignment: Alignment.center,
+        child: _buildStack(context),
+      ),
+    );
+  }
+
+    Widget _buildStack(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          child: Container(
+            height: MediaQuery.of(context).size.height/4,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Color(0xFF8E8CD8),
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(75.0),
+                  bottomRight: Radius.circular(75.0)),
+            ),
+          ),
+        ),
+        Positioned(
+            left: 10,
+            top: MediaQuery.of(context).size.height / 20.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Center(
+                    child: Image.asset(
+                  "assets/images/jobrecords.png",
+                  width: MediaQuery.of(context).size.height / 10.0,
+                  height: MediaQuery.of(context).size.height / 10.0,
+                )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0),
+                  child: Center(
+                    child: Text(
+                      'Jobs List',
+                      style: TextStyle(
+                          textBaseline: TextBaseline.alphabetic,
+                          fontFamily: 'Montserrat',
+                          fontSize: 25.0,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            )),
+        // Positioned(
+        //     left: 20,
+        //     top: MediaQuery.of(context).size.height / 5,
+        //     child: Column(children: <Widget>[_buildSearchBar(context)]))
+      ],
+    );
+  }
+
+    Widget _buildSearchBar(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(right: 30.0),
+      width: MediaQuery.of(context).size.width / 1.4,
+      height: 45,
+      // margin: EdgeInsets.only(top: 32),
+      padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)]),
+      child: TextField(
+        keyboardType: TextInputType.text,
+        // controller: _search,
+        onTap: () {
+        //   setState(() {
+        //     isSearchFocused = true;
+        //   });
+        // },
+        // onChanged: (string) {
+        //   _debouncer.run(() {
+        //     setState(() {
+        //       filteredVehicles = vehicle
+        //           .where((u) =>
+        //               (u.vNumber.toLowerCase().contains(string.toLowerCase())))
+        //           .toList();
+        //     });
+        //   });
+        },
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey,
+            size: 30,
+          ),
+          hintText: 'search',
+        ),
       ),
     );
   }
@@ -72,7 +176,7 @@ class _JobRecordsState extends State<JobRecords>
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 22.0,
+          fontSize: 20.0,
           fontFamily: 'Montserrat',
         ),
       ),

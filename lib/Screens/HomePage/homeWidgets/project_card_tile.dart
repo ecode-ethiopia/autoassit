@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_jobs_service.dart';
@@ -18,9 +19,26 @@ class ProjectCardTile extends StatefulWidget {
   _ProjectCardTileState createState() => _ProjectCardTileState();
 }
 
+class Debouncer {
+  final int milliseconds;
+  VoidCallback action;
+  Timer _timer;
+
+  Debouncer({this.milliseconds});
+
+  run(VoidCallback action) {
+    if (null != _timer) {
+      _timer.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+}
+
 class _ProjectCardTileState extends State<ProjectCardTile> {
-  List<Job> job = List();
+  final _debouncer = Debouncer(milliseconds: 500);
+  List<Job> filteredJobList = List();
   List<Job> _jobList = [];
+  List<Job> _tempList = List();
   bool isfetching = true;
   bool isEmpty = false;
   Job jobmodel;
@@ -67,6 +85,8 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
     _jobList = Provider.of<JobProvider>(context).listJobs;
     if (_jobList.isNotEmpty) {
       setState(() {
+        _tempList = _jobList;
+        filteredJobList = _tempList;
         isfetching = false;
         isEmpty = false;
       });
@@ -96,9 +116,10 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
             : isEmpty ? Text("No ongoing jobs"): Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                _buildSearchBar(contect),
                 ListView.builder(
                     shrinkWrap: true,
-                    itemCount: _jobList.length,
+                    itemCount: filteredJobList.length,
                     controller: _scrollController,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
@@ -110,7 +131,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                         child: GestureDetector(
                           onTap: () async {
                             // final jobid = _jobList[index].jobId;
-                            jobmodel = _jobList[index];
+                            jobmodel = filteredJobList[index];
                             Provider.of<JobProvider>(context, listen: false).jobModel = jobmodel;
                             print(jobmodel.jobno);
                             Navigator.of(context).push(MaterialPageRoute(
@@ -122,7 +143,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                               leading: Container(
                                 child: Center(
                                   child: Text(
-                                    "Job No ${_jobList[index].jobno}",
+                                    "Job No ${filteredJobList[index].jobno}",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900,
@@ -150,7 +171,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                                     width: 5,
                                   ),
                                       Text(
-                                        "${_jobList[index].vName} ${_jobList[index].vNumber}",
+                                        "${filteredJobList[index].vName} ${filteredJobList[index].vNumber}",
                                         style: TextStyle(
                                             color: Colors.black54,
                                             fontWeight: FontWeight.w700,
@@ -178,7 +199,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                                     width: 5,
                                   ),
                                           Text(
-                                            "Mr.${_jobList[index].cusName}",
+                                            "Mr.${filteredJobList[index].cusName}",
                                             style: TextStyle(
                                                 color: Colors.blueAccent,
                                                 fontSize: 12,
@@ -189,7 +210,7 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
                                         ],
                                       ),
                                       Text(
-                                        "${_jobList[index].taskCount} Tasks / ${_jobList[index].completeTaskCount} Done",
+                                        "${filteredJobList[index].taskCount} Tasks / ${filteredJobList[index].completeTaskCount} Done",
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.green[700],
@@ -224,8 +245,8 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
   }
 
   int progressCounter(int index) {
-    int temp = int.parse(_jobList[index].completeTaskCount);
-    int tcount = int.parse(_jobList[index].taskCount);
+    int temp = int.parse(filteredJobList[index].completeTaskCount);
+    int tcount = int.parse(filteredJobList[index].taskCount);
     if(tcount != 0){
       int progressVal = (100 ~/ tcount) * temp ;
       return progressVal;
@@ -235,5 +256,48 @@ class _ProjectCardTileState extends State<ProjectCardTile> {
     }
     
     
+  }
+
+    Widget _buildSearchBar(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 2.0),
+      width: MediaQuery.of(context).size.width / 1.2,
+      height: 45,
+      // margin: EdgeInsets.only(top: 32),
+      padding: EdgeInsets.only(top: 2, left: 16, right: 16, bottom: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 7)]),
+      child: TextField(
+        keyboardType: TextInputType.text,
+        // controller: _search,
+        // onTap: () {
+        //   setState(() {
+        //     isSearchFocused = true;
+        //   });
+        // },
+        onChanged: (string) {
+          // print(string);
+          _debouncer.run(() {
+            setState(() {
+              filteredJobList = _tempList
+                  .where((u) =>
+                      (u.vNumber.toLowerCase().contains(string.toLowerCase())))
+                  .toList();
+            });
+          });
+        },
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey,
+            size: 30,
+          ),
+          hintText: 'Search Ongoing Jobs',
+        ),
+      ),
+    );
   }
 }

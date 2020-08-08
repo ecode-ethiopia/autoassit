@@ -94,6 +94,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
             : isEmpty ? Text("No Finished jobs"): Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                _buildSearchBar(contect),
                 ListView.builder(
                     shrinkWrap: true,
                     itemCount: _jobList.length,
@@ -233,5 +234,47 @@ class _FinishedJobListState extends State<FinishedJobList> {
     }
     
     
+  }
+
+     Widget _buildSearchBar(BuildContext context) {
+    return Container(
+      // margin: EdgeInsets.only(right: 30.0),
+      width: MediaQuery.of(context).size.width / 1.2,
+      height: 45,
+      // margin: EdgeInsets.only(top: 32),
+      padding: EdgeInsets.only(top: 2, left: 16, right: 16, bottom: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 7)]),
+      child: TextField(
+        keyboardType: TextInputType.text,
+        // controller: _search,
+        // onTap: () {
+        //   setState(() {
+        //     isSearchFocused = true;
+        //   });
+        // },
+        // onChanged: (string) {
+        //   _debouncer.run(() {
+        //     setState(() {
+        //       filteredVehicles = vehicle
+        //           .where((u) =>
+        //               (u.vNumber.toLowerCase().contains(string.toLowerCase())))
+        //           .toList();
+        //     });
+        //   });
+        // },
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey,
+            size: 30,
+          ),
+          hintText: 'Search Completed Jobs',
+        ),
+      ),
+    );
   }
 }
