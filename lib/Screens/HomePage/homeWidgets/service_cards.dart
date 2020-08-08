@@ -1,3 +1,4 @@
+import 'package:autoassit/Screens/Jobs/job_Records.dart';
 import 'package:autoassit/Screens/Vehicle/pre_vehi_list.dart';
 import 'package:flutter/material.dart';
 
@@ -38,12 +39,18 @@ class _ServicesListState extends State<ServicesList> {
                     builder: (context) => PreVehicleList(),
                   ),
                 );
-              }),
+              }
+              ),
               SizedBox(width: 15.0),
               getServicesCard(
                   'assets/images/jobrecords.png', '    Job\nRecords',
                   onTap: () {
-                print("Go to view customer screen !");
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => JobRecords(),
+                  ),
+                );
               }),
               SizedBox(width: 15.0),
               getServicesCard('assets/images/products.png', 'Products',
