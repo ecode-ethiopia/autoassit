@@ -1,5 +1,7 @@
 import 'package:autoassit/Providers/AuthProvider.dart';
+import 'package:autoassit/Providers/CustomerProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
+import 'package:autoassit/Providers/VehicleProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Screens/Customer/add_customer.dart';
 import 'package:autoassit/Screens/Customer/pre_cus_list.dart';
@@ -26,6 +28,12 @@ void main(){
       ),
       ChangeNotifierProvider(
         create: (_) => TaskProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => VehicleProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => CustomerProvider(),
       ),
     ],child: MyApp())));
 }

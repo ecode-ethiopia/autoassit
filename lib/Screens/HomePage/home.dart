@@ -213,7 +213,7 @@ class _HomePageState extends State<HomePage>
           ],
         ),
       ),
-      initiallyExpanded: true,
+      initiallyExpanded: false,
       children: <Widget>[
         Container(
                 child: SingleChildScrollView(

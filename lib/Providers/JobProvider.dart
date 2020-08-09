@@ -14,6 +14,9 @@ class JobProvider with ChangeNotifier {
   Job _jobModel;
   List<Job> _jobList = [];
   List<Job> _jobListFinished = [];
+  List<Job> _jobListByCusId = [];
+  List<Job> _jobListByVehiNo = [];
+
 
   // ignore: unnecessary_getters_setters
   Job get jobModel => _jobModel;
@@ -93,6 +96,66 @@ class JobProvider with ChangeNotifier {
 
       notifyListeners();
       return _jobListFinished;
+    }).catchError((onError){
+      print(onError);
+    });
+  }
+
+    Future<List<Job>> getJobsByCusId(String cusId) async {
+    _jobListByCusId = [];
+    SharedPreferences initializeToken = await SharedPreferences.getInstance();
+
+    final body = {
+        "cusId": cusId,
+        "token": initializeToken.getString("authtoken")
+      };
+
+      Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+      
+     String _url = "${URLS.BASE_URL}/job/getJobsByCusId";
+    return http.post(_url,body: jsonEncode(body),headers: requestHeaders).then((res) async {
+      print("getting finished jobssssssssssssssss ");
+      // print(res.body);
+      var convertedData = convert.jsonDecode(res.body);
+      // print(convertedData);
+        List data = convertedData;
+
+        _jobListByCusId = data.map((item) => Job.fromJson(item)).toList();
+        
+
+
+      notifyListeners();
+      return _jobListByCusId;
+    }).catchError((onError){
+      print(onError);
+    });
+  }
+
+     Future<List<Job>> getJobsByVehiNum(String vehiNo) async {
+    _jobListByVehiNo = [];
+    SharedPreferences initializeToken = await SharedPreferences.getInstance();
+
+    final body = {
+        "vnumber": vehiNo,
+        "token": initializeToken.getString("authtoken")
+      };
+
+      Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+      
+     String _url = "${URLS.BASE_URL}/job/getJobsByVehicleNo";
+    return http.post(_url,body: jsonEncode(body),headers: requestHeaders).then((res) async {
+      print("getting finished jobssssssssssssssss ");
+      // print(res.body);
+      var convertedData = convert.jsonDecode(res.body);
+      // print(convertedData);
+        List data = convertedData;
+
+        _jobListByVehiNo = data.map((item) => Job.fromJson(item)).toList();
+        
+
+
+      notifyListeners();
+      return _jobListByVehiNo;
     }).catchError((onError){
       print(onError);
     });
