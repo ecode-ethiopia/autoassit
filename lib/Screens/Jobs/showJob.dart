@@ -369,7 +369,10 @@ class _ShowJobState extends State<ShowJob> {
   }
 
   Future gotoStatusPage(int index, BuildContext context) async {
-     taskmodel = _listTasks[index];
+     if(jobModel.status == 'finished'){
+        showFinishedDialog();
+      }else{
+          taskmodel = _listTasks[index];
     Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
     showDialog(
         barrierDismissible: false,
@@ -380,10 +383,15 @@ class _ShowJobState extends State<ShowJob> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))));
         });
+      }
+    
   }
 
   Future gotoDeleteTaskPage(int index, BuildContext context) async {
-     taskmodel = _listTasks[index];
+    if(jobModel.status == 'finished'){
+        showFinishedDialog();
+      }else{
+         taskmodel = _listTasks[index];
     Provider.of<TaskProvider>(context, listen: false).taskModel = taskmodel;
    Job jobeka = await showDialog(
         barrierDismissible: false,
@@ -397,6 +405,8 @@ class _ShowJobState extends State<ShowJob> {
         print("issssssssssss ${jobeka.procerCharge}");
         print("issssssssssss ${jobeka.total}");
     updateJobModel(jobeka);
+      }
+    
   }
 
   Widget buildProductChip(ProductModel products) {
@@ -462,7 +472,7 @@ class _ShowJobState extends State<ShowJob> {
               ),
               SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(6.0),
                 // height: MediaQuery.of(context).size.height / 13,
                 // width: MediaQuery.of(context).size.width / 4.5,
                 decoration: BoxDecoration(
@@ -492,17 +502,27 @@ class _ShowJobState extends State<ShowJob> {
               ),
               SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(6.0),
                 decoration: BoxDecoration(
                     color: Color(0xFFef5350),
                     borderRadius: BorderRadius.circular(12)),
-                child: Text(
-                  "Rs.${jobModel.total}0",
-                  style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  children: [
+                     Text(
+                      "Job Total",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w800),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      "Rs.${jobModel.total}0",
+                      style: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -591,7 +611,7 @@ class _ShowJobState extends State<ShowJob> {
               title: Text("Sorry, You can't !"),
               content: Container(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height / 8,
+                  maxHeight: MediaQuery.of(context).size.height / 12,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -601,7 +621,7 @@ class _ShowJobState extends State<ShowJob> {
                       textAlign: TextAlign.left,
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 35,
+                      height: MediaQuery.of(context).size.height / 40,
                     ),
                   ],
                 ),
@@ -611,8 +631,10 @@ class _ShowJobState extends State<ShowJob> {
   }
 
   Future gotoDeleteJob(BuildContext context) async {
-
-  await showDialog(
+     if(jobModel.status == 'finished'){
+        showFinishedDialog();
+      }else{
+          await showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
@@ -621,6 +643,8 @@ class _ShowJobState extends State<ShowJob> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))));
         });
+      }
+ 
   }
 
   BottomAppBar buildBottomAppBar() {
