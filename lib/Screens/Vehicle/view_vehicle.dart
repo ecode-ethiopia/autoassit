@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'package:autoassit/Providers/AuthProvider.dart';
+import 'package:autoassit/Providers/VehicleProvider.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
+import 'package:autoassit/Screens/Vehicle/joblist_by_vehiNo.dart';
 import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Vehicle_Services/getVehicles_Service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewVehicle extends StatefulWidget {
@@ -42,10 +46,12 @@ class _ViewVehicleState extends State<ViewVehicle> {
   bool isSearchFocused = false;
   String isExpanded = "";
   bool isfetched = true;
+  Vehicle vehicleModel;
 
     @override
   void initState() {
     super.initState();
+    
     GetVehicleService.getVehicles().then((vehiclesFromServer) {
       setState(() {
         vehicle = vehiclesFromServer;
@@ -243,9 +249,9 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width / 2,
                                   child: Text(
-                                      filteredVehicles[index].make +
+                                      "${filteredVehicles[index].make}" +
                                           " " +
-                                          filteredVehicles[index].model,
+                                          "${filteredVehicles[index].model}",
                                       // overflow: TextOverflow.clip,
                                       softWrap: true,
                                       style: TextStyle(
@@ -263,7 +269,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 5.0),
                                         child: Text(
-                                            filteredVehicles[index].odo,
+                                            "${filteredVehicles[index].odo}",
                                             style: TextStyle(
                                                 color: Color(0xFF2e282a),
                                                 fontFamily: 'OpenSans',
@@ -286,7 +292,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                               MediaQuery.of(context).size.width /
                                                   2.4,
                                           child: Text(
-                                              filteredVehicles[index].cusName,
+                                              "${filteredVehicles[index].cusName}",
                                               softWrap: true,
                                               style: TextStyle(
                                                   color: Color(0xFF2e282a),
@@ -374,20 +380,11 @@ class _ViewVehicleState extends State<ViewVehicle> {
                           ),
                           child: FlatButton(
                             onPressed: () async {
-                              // final cusId = filteredCustomers[index].cusid;
-                              // final cusName = filteredCustomers[index].fName +
-                              //     " " +
-                              //     filteredCustomers[index].lName;
-
-                              // SharedPreferences ownedVehi =
-                              //     await SharedPreferences.getInstance();
-                              // ownedVehi.setString("cusId", cusId);
-
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (context) => OwnedVehicles(
-                              //           customer_id: cusId,
-                              //           customer_name: cusName,
-                              //         )));
+                              vehicleModel = filteredVehicles[index];
+                              Provider.of<VehicleProvider>(context, listen: false).vehicleModel = vehicleModel;
+                  
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => JobListByVehiId()));
                             },
                             child: Text(
                               "History",
