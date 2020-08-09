@@ -21,19 +21,29 @@ class _JobRecordsState extends State<JobRecords>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       resizeToAvoidBottomPadding: false, // this avoids the overflow error
+        resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[100],
       appBar: _buildTopAppbar(context),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(color: Colors.transparent),
-            child: Center(child: _buildTabBar(context)),
-          ),
-          Flexible(
-            child: _buildTabView(context),
-          ),
-        ],
+      body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+              child: Container(
+                  child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+                  decoration: BoxDecoration(color: Colors.transparent),
+                  child: Center(child: _buildTabBar(context)),
+            ),
+            Flexible(
+                  child: _buildTabView(context),
+            ),
+          ],
+        ),
+                ),
       ),
     );
   }
@@ -149,8 +159,8 @@ class _JobRecordsState extends State<JobRecords>
     return TabBarView(
       controller: tabController,
       children: <Widget>[
-        OngoingJobsContent(),
-        FinishedJobContent(),
+        SingleChildScrollView(child: OngoingJobsContent()),
+        SingleChildScrollView(child: FinishedJobContent()),
       ],
     );
   }

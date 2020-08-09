@@ -166,26 +166,26 @@ class _CreateJobState extends State<CreateJob> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isJobCreating
-          ? JobLoader()
-          : Stack(children: <Widget>[
-              Container(
-                height: 25,
-                color: Color(0xFFef5350),
-              ),
-              _mainContent(context),
-            ]),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Color(0xFF0D253F),
-        onPressed: () {
-          print(jobModel.jobno);
-        },
-        label: Text('Finish Job'),
-        icon: Icon(Icons.receipt),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: buildBottomAppBar(),
-    );
+        body: isJobCreating
+      ? JobLoader()
+      : Stack(children: <Widget>[
+          Container(
+            height: 25,
+            color: Color(0xFFef5350),
+          ),
+          _mainContent(context),
+        ]),
+        floatingActionButton: FloatingActionButton.extended(
+    backgroundColor: Color(0xFF0D253F),
+    onPressed: () {
+      print(jobModel.jobno);
+    },
+    label: Text('Finish Job'),
+    icon: Icon(Icons.receipt),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: buildBottomAppBar(),
+      );
   }
 
     Widget _mainContent(BuildContext context) {

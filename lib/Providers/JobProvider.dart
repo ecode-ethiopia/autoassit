@@ -28,7 +28,7 @@ class JobProvider with ChangeNotifier {
 
   
 
-  Future<void> startGetJobs() async {
+  Future<List<Job>> startGetJobs() async {
     _jobList = [];
     SharedPreferences initializeToken = await SharedPreferences.getInstance();
 
@@ -48,8 +48,9 @@ class JobProvider with ChangeNotifier {
 
         _jobList = data.map((item) => Job.fromJson(item)).toList();
 
-
+         
       notifyListeners();
+      return _jobList;
     }).catchError((onError){
       print(onError);
     });
@@ -68,7 +69,7 @@ class JobProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> startGetFinishedJobs() async {
+  Future<List<Job>> startGetFinishedJobs() async {
     _jobListFinished = [];
     SharedPreferences initializeToken = await SharedPreferences.getInstance();
 
@@ -87,9 +88,11 @@ class JobProvider with ChangeNotifier {
         List data = convertedData;
 
         _jobListFinished = data.map((item) => Job.fromJson(item)).toList();
+        
 
 
       notifyListeners();
+      return _jobListFinished;
     }).catchError((onError){
       print(onError);
     });

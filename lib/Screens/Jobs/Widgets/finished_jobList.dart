@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:autoassit/Controllers/ApiServices/Job_services/get_jobs_service.dart';
 import 'package:autoassit/Models/jobModel.dart';
@@ -16,9 +17,25 @@ class FinishedJobList extends StatefulWidget {
   _FinishedJobListState createState() => _FinishedJobListState();
 }
 
+class Debouncer {
+  final int milliseconds;
+  VoidCallback action;
+  Timer _timer;
+
+  Debouncer({this.milliseconds});
+
+  run(VoidCallback action) {
+    if (null != _timer) {
+      _timer.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+}
+
 class _FinishedJobListState extends State<FinishedJobList> {
+  final _debouncer = Debouncer(milliseconds: 500);
   List<Job> job = List();
-  List<Job> _jobList = [];
+  List<Job> jobList = List();
   bool isfetching = true;
   bool isEmpty = false;
   Job jobmodel;
@@ -27,26 +44,29 @@ class _FinishedJobListState extends State<FinishedJobList> {
   @override
   void initState() {
     super.initState();
-    // callAPI();
-    Provider.of<JobProvider>(context, listen: false).startGetFinishedJobs();
+    getFinishedJobs();
+    
     _scrollController = ScrollController();
   }
 
-  // callAPI() {
-  //   GetJobsController.getJobs().then((jobsFromServer) {
-  //     setState(() {
-  //       job = jobsFromServer;
-  //     });
+  getFinishedJobs() {
+    Provider.of<JobProvider>(context, listen: false).startGetFinishedJobs().then((jobsFromserver){
 
-  //     if(jobsFromServer.isNotEmpty){
-  //       print("not empty");
-  //        setState(() {
-  //       isfetching = false;
-  //     });
-  //     print("is fetcing  $isfetching");
-  //     }
-  //   });
-  // }
+        if (jobsFromserver.isNotEmpty) {
+      setState(() {
+        job = jobsFromserver;
+        jobList = job;
+        isfetching = false;
+        isEmpty = false;
+      });
+    }else{
+      setState(() {
+        isfetching = false;
+        isEmpty = true;
+      });
+    }   
+    });
+  }
 
   final List colors = [Colors.blue, Colors.black, Colors.green];
 
@@ -61,32 +81,32 @@ class _FinishedJobListState extends State<FinishedJobList> {
   }
 
   Widget _bodyContent(BuildContext contect){
-      _jobList = [];
-    _jobList = Provider.of<JobProvider>(context).listJobsFinished;
-    if (_jobList.isNotEmpty) {
-      setState(() {
-        isfetching = false;
-        isEmpty = false;
-      });
-    }else{
-      setState(() {
-        isfetching = false;
-        isEmpty = true;
-      });
-    }
+    //   _jobList = [];
+    // _jobList = Provider.of<JobProvider>(context).listJobsFinished;
+    // if (_jobList.isNotEmpty) {
+    //   setState(() {
+    //     isfetching = false;
+    //     isEmpty = false;
+    //   });
+    // }else{
+    //   setState(() {
+    //     isfetching = false;
+    //     isEmpty = true;
+    //   });
+    // }
 
     var rng = new math.Random.secure();
     return  isfetching
             ? 
             SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
+              height: MediaQuery.of(context).size.height,
                       child: ListSkeleton(
                   style: SkeletonStyle(
                     theme: SkeletonTheme.Light,
                     isShowAvatar: false,
                     isCircleAvatar: false,
                     barCount: 3,
-                    colors: [Color(0xFF8E8CD8), Color(0xFF81C784), Color(0xffFFE082)],
+                    // colors: [Color(0xFF8E8CD8), Color(0xFF81C784), Color(0xffFFE082)],
                     isAnimation: true
                   ),
                 ),
@@ -97,7 +117,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
                 _buildSearchBar(contect),
                 ListView.builder(
                     shrinkWrap: true,
-                    itemCount: _jobList.length,
+                    itemCount: jobList.length,
                     controller: _scrollController,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
@@ -109,7 +129,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
                         child: GestureDetector(
                           onTap: () async {
                             // final jobid = _jobList[index].jobId;
-                            jobmodel = _jobList[index];
+                            jobmodel = jobList[index];
                             Provider.of<JobProvider>(context, listen: false).jobModel = jobmodel;
                             print(jobmodel.jobno);
                             Navigator.of(context).push(MaterialPageRoute(
@@ -121,7 +141,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
                               leading: Container(
                                 child: Center(
                                   child: Text(
-                                    "Job No ${_jobList[index].jobno}",
+                                    "Job No ${jobList[index].jobno}",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900,
@@ -149,7 +169,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
                                     width: 5,
                                   ),
                                       Text(
-                                        "${_jobList[index].vName} ${_jobList[index].vNumber}",
+                                        "${jobList[index].vName} ${jobList[index].vNumber}",
                                         style: TextStyle(
                                             color: Colors.black54,
                                             fontWeight: FontWeight.w700,
@@ -177,7 +197,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
                                     width: 5,
                                   ),
                                           Text(
-                                            "Mr.${_jobList[index].cusName}",
+                                            "Mr.${jobList[index].cusName}",
                                             style: TextStyle(
                                                 color: Colors.blueAccent,
                                                 fontSize: 12,
@@ -188,7 +208,7 @@ class _FinishedJobListState extends State<FinishedJobList> {
                                         ],
                                       ),
                                       Text(
-                                        "${_jobList[index].taskCount} Tasks / ${_jobList[index].completeTaskCount} Done",
+                                        "${jobList[index].taskCount} Tasks / ${jobList[index].completeTaskCount} Done",
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.green[700],
@@ -223,8 +243,8 @@ class _FinishedJobListState extends State<FinishedJobList> {
   }
 
   int progressCounter(int index) {
-    int temp = int.parse(_jobList[index].completeTaskCount);
-    int tcount = int.parse(_jobList[index].taskCount);
+    int temp = int.parse(jobList[index].completeTaskCount);
+    int tcount = int.parse(jobList[index].taskCount);
     if(tcount != 0){
       int progressVal = (100 ~/ tcount) * temp ;
       return progressVal;
@@ -255,16 +275,16 @@ class _FinishedJobListState extends State<FinishedJobList> {
         //     isSearchFocused = true;
         //   });
         // },
-        // onChanged: (string) {
-        //   _debouncer.run(() {
-        //     setState(() {
-        //       filteredVehicles = vehicle
-        //           .where((u) =>
-        //               (u.vNumber.toLowerCase().contains(string.toLowerCase())))
-        //           .toList();
-        //     });
-        //   });
-        // },
+        onChanged: (string) {
+          _debouncer.run(() {
+            setState(() {
+              jobList = job
+                  .where((u) =>
+                      (u.vNumber.toLowerCase().contains(string.toLowerCase())))
+                  .toList();
+            });
+          });
+        },
         decoration: InputDecoration(
           border: InputBorder.none,
           prefixIcon: Icon(
