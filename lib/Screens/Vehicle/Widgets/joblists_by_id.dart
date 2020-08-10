@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
+import 'package:timeago/timeago.dart' as timeAgo;
 
 class JoblistWidget extends StatefulWidget {
   @override
@@ -107,6 +108,8 @@ class _JoblistWidgetState extends State<JoblistWidget> {
                         controller: _scrollController,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
+                          var status = filteredJobList[index].status;
+                           var date = DateTime.parse(filteredJobList[index].date);
                           int progressVal = progressCounter(index);
                           return Card(
               elevation: 2.0,
@@ -123,102 +126,131 @@ class _JoblistWidgetState extends State<JoblistWidget> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                  child: ListTile(
-                    leading: Container(
-                      child: Center(
-                        child: Text(
-                          "Job No ${filteredJobList[index].jobno}",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 20),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          borderRadius: new BorderRadius.circular(8.0),
-                          color: colors[rng.nextInt(3)]),
-                      width: 70.0,
-                      height: 80.0,
-                    ),
-                    title: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: [
-                            Icon(Icons.directions_car,
-                            size: 20,
-                              color: Color(0xFFef5350),
-                            ),
-                             SizedBox(
-                          width: 5,
-                        ),
-                            Text(
-                              "${filteredJobList[index].vName} ${filteredJobList[index].vNumber}",
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Container(
+                          child: Center(
+                            child: Text(
+                              "Job No ${filteredJobList[index].jobno}",
                               style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                  fontFamily: "SF"),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 20),
+                              textAlign: TextAlign.center,
                             ),
-                          ],
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: new BorderRadius.circular(8.0),
+                              color: colors[rng.nextInt(3)]),
+                          width: 70.0,
+                          height: 80.0,
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        title: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Row(
                               children: [
-                                Icon(Icons.person_pin,
+                                Icon(Icons.directions_car,
                                 size: 20,
-                              color: Color(0xFFef5350),
+                                  color: Color(0xFFef5350),
+                                ),
+                                 SizedBox(
+                              width: 5,
                             ),
-                             SizedBox(
-                          width: 5,
-                        ),
                                 Text(
-                                  "Mr.${filteredJobList[index].cusName}",
+                                  "${filteredJobList[index].vName} ${filteredJobList[index].vNumber}",
                                   style: TextStyle(
-                                      color: Colors.blueAccent,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      fontFamily: "SF"),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
-                            Text(
-                              "${filteredJobList[index].taskCount} Tasks / ${filteredJobList[index].completeTaskCount} Done",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.green[700],
-                                fontWeight: FontWeight.w500
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Icon(Icons.person_pin,
+                                    size: 20,
+                                  color: Color(0xFFef5350),
+                                ),
+                                 SizedBox(
+                              width: 5,
+                            ),
+                                    Text(
+                                      "Mr.${filteredJobList[index].cusName}",
+                                      style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "${filteredJobList[index].taskCount} Tasks / ${filteredJobList[index].completeTaskCount} Done",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.green[700],
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            FAProgressBar(
+                              size: 4,
+                              currentValue: progressVal,
+                              progressColor: Colors.green,
+                              backgroundColor: Color(0xffF0F0F0),
+                            ),
+                            SizedBox(
+                              height: 2,
                             ),
                           ],
                         ),
+                      ),
                         SizedBox(
-                          height: 10,
+                          height: MediaQuery.of(context).size.height /60,
                         ),
-                        FAProgressBar(
-                          size: 4,
-                          currentValue: progressVal,
-                          progressColor: Colors.green,
-                          backgroundColor: Color(0xffF0F0F0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              // color: Colors.amber,
+                              width: MediaQuery.of(context).size.width /2.3,
+                              child: Text("Job Assigned ${timeAgo.format(date)}",
+                                 style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 15,
                         ),
-                        SizedBox(
-                          height: 2,
+                              )),
+                            Container(
+                              // margin: EdgeInsets.only(left:3),
+                              height: MediaQuery.of(context).size.height /20,
+                              width: MediaQuery.of(context).size.width /3,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image:status == "onGoing"? AssetImage('assets/images/inprogress.png'):AssetImage('assets/images/completed2.png'),
+                                      fit: BoxFit.fill))),
+                          ],
                         ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
               ),

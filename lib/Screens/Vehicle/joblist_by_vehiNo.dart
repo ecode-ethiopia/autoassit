@@ -179,7 +179,7 @@ class _JobListByVehiIdState extends State<JobListByVehiId>
       unselectedLabelColor: Color(0xFF020433),
       isScrollable: true,
       tabs: <Widget>[
-        getTabs("${vehicleModel.make} ${vehicleModel.model}'s job History"),
+        getTabs("job History of ${vehicleModel.make} ${vehicleModel.model}\nVehicle No: ${vehicleModel.vNumber}"),
       ],
     );
   }
@@ -188,6 +188,7 @@ class _JobListByVehiIdState extends State<JobListByVehiId>
     return Tab(
       child: Text(
         title,
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 16.0,
           fontFamily: 'Montserrat',

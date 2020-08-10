@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:autoassit/Providers/CustomerProvider.dart';
+import 'package:autoassit/Screens/Customer/Widgets/delete_customer.dart';
 import 'package:autoassit/Screens/Customer/Widgets/edit_csutomer.dart';
 import 'package:autoassit/Screens/Customer/owned_vehicles.dart';
 import 'package:autoassit/Screens/Vehicle/addVehicle.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/getCustomers_Service.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
@@ -44,6 +47,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
   bool isSearchFocused = false;
   bool isfetched = true;
   String isExpanded = "";
+  Customer customerModel;
 
   @override
   void initState() {
@@ -160,7 +164,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
             setState(() {
               filteredCustomers = customer
                   .where((u) =>
-                      (u.fName.toLowerCase().contains(string.toLowerCase())))
+                      (u.fName.toLowerCase().contains(string.toLowerCase())) || (u.mobile.toLowerCase().contains(string.toLowerCase())))
                   .toList();
             });
           });
@@ -241,9 +245,9 @@ class _ViewCustomerState extends State<ViewCustomer> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width / 2,
                                 child: Text(
-                                    filteredCustomers[index].fName +
+                                    "${filteredCustomers[index].fName}" +
                                         " " +
-                                        filteredCustomers[index].lName,
+                                       "${ filteredCustomers[index].lName}",
                                     // overflow: TextOverflow.clip,
                                     softWrap: true,
                                     style: TextStyle(
@@ -261,7 +265,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 5.0),
                                       child: Text(
-                                          filteredCustomers[index].mobile,
+                                          "${filteredCustomers[index].mobile}",
                                           style: TextStyle(
                                               color: Color(0xFF2e282a),
                                               fontFamily: 'OpenSans',
@@ -284,7 +288,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
                                             MediaQuery.of(context).size.width /
                                                 2.4,
                                         child: Text(
-                                            filteredCustomers[index].email,
+                                            "${filteredCustomers[index].email}",
                                             softWrap: true,
                                             style: TextStyle(
                                                 color: Color(0xFF2e282a),
@@ -392,7 +396,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
 
   Widget _buildInnerTopWidget(index) {
     return Container(
-        color: Color(0xFF66BB6A),
+        color: Color(0xFFffcd3c),
         alignment: Alignment.center,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -422,17 +426,18 @@ class _ViewCustomerState extends State<ViewCustomer> {
                 height: MediaQuery.of(context).size.height/6,
                 width: MediaQuery.of(context).size.width/5.3,
                 decoration: BoxDecoration(
-                    color: Color(0xFFffcd3c), shape: BoxShape.circle),
+                    color: Color(0xFF81C784), shape: BoxShape.circle),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text("Credit Limit"),
+                    Text("Credit Limit",textAlign: TextAlign.center,),
                     Text(filteredCustomers[index].cLimit,
+                    textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Color(0xFFef5350),
                             fontFamily: 'OpenSans',
                             fontSize: 18.0,
-                            fontWeight: FontWeight.w600)),
+                            fontWeight: FontWeight.w700)),
                   ],
                 ),
               ),
@@ -447,11 +452,11 @@ class _ViewCustomerState extends State<ViewCustomer> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Icon(icon, size: 18, color: Color(0xFFFB8C00)),
+          Icon(icon, size: 18, color: Color(0xFFf44336)),
           Text(
             title,
             style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600),
           ),
@@ -472,6 +477,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
   Widget _buildInnerBottomWidget(index) {
     return Builder(builder: (context) {
       return Container(
+        margin: EdgeInsets.only(bottom:20),
         color: Color(0xFFe57373),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -480,27 +486,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
               alignment: Alignment.bottomCenter,
               child: FlatButton(
                 onPressed: () {
-                  print("clicked edit btn");
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                           child: EditCustomer(fname: filteredCustomers[index].fName,
-                                               lname: filteredCustomers[index].lName,
-                                               email: filteredCustomers[index].email,
-                                               tel: filteredCustomers[index].telephone,
-                                               mobile: filteredCustomers[index].mobile,
-                                               pCode: filteredCustomers[index].adL1,
-                                               street: filteredCustomers[index].adL2,
-                                               city: filteredCustomers[index].adL3,
-                                               cLimit: filteredCustomers[index].cLimit,),
-                           shape: RoundedRectangleBorder(
-                             borderRadius: BorderRadius.all(Radius.circular(12))
-                           ),
-                        );
-                      }
-                    );
+                  goToEditDetails(index, context);
                 },
                 child: Text(
                   "Update Details",
@@ -531,7 +517,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
               child: FlatButton(
                 onPressed: () {
                   print("clicked delete btn");
-                successDialog("success", "Customer removed");
+                goToDelCustomer(index, context);
                 },
                 child: Text(
                   "Delete Customer",
@@ -545,6 +531,42 @@ class _ViewCustomerState extends State<ViewCustomer> {
         ),
       );
     });
+  }
+
+  void goToEditDetails(index, BuildContext context) {
+    print("clicked edit btn");
+     customerModel = filteredCustomers[index];
+    Provider.of<CustomerProvider>(context, listen: false).customerModel = customerModel;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+             child: EditCustomer(),
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.all(Radius.circular(12))
+             ),
+          );
+        }
+      );
+  }
+
+   void goToDelCustomer(index, BuildContext context) {
+    print("clicked edit btn");
+     customerModel = filteredCustomers[index];
+    Provider.of<CustomerProvider>(context, listen: false).customerModel = customerModel;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+             child: DeleteCustomer(),
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.all(Radius.circular(12))
+             ),
+          );
+        }
+      );
   }
 
   Future<dynamic> successDialog(String title, String dec) {
