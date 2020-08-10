@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:autoassit/Controllers/ApiServices/Job_services/get_jobs_service.dart';
 import 'package:autoassit/Models/jobModel.dart';
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
@@ -11,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 class JoblistWidget extends StatefulWidget {
   @override

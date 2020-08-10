@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/VehicleProvider.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
 import 'package:autoassit/Screens/Vehicle/joblist_by_vehiNo.dart';

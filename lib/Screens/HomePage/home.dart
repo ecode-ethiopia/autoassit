@@ -6,7 +6,6 @@ import 'package:autoassit/Screens/HomePage/homeWidgets/service_cards.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/vehicle_cards.dart';
 import 'package:autoassit/Utils/loading_dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/customer_cards.dart';

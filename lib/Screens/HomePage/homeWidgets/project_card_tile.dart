@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:autoassit/Controllers/ApiServices/Job_services/get_jobs_service.dart';
 import 'package:autoassit/Models/jobModel.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/progress_indicator.dart';
@@ -9,10 +6,7 @@ import 'package:autoassit/Screens/Jobs/showJob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:provider/provider.dart';
-
 import 'dart:math' as math;
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProjectCardTile extends StatefulWidget {
   @override

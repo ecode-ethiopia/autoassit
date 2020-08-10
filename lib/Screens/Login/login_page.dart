@@ -6,7 +6,6 @@ import 'package:autoassit/Screens/Login/Widgets/bezierContainer.dart';
 import 'package:autoassit/Utils/loading_dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:progress_dialog/progress_dialog.dart';

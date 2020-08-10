@@ -8,14 +8,11 @@ import 'package:autoassit/Models/userModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
-import 'package:autoassit/Screens/Jobs/Widgets/custom_modal_action_button.dart';
-import 'package:autoassit/Screens/Jobs/create_job.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:autoassit/Controllers/ApiServices/Job_services/create_job_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

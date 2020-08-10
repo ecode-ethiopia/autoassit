@@ -1,4 +1,3 @@
-import 'dart:convert' as convert;
 import 'dart:convert';
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/jobModel.dart';

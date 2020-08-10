@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/userModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';

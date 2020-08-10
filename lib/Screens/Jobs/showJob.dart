@@ -1,4 +1,3 @@
-import 'dart:convert' as convert;
 import 'dart:convert';
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/jobModel.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/utils.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'additems.dart';
 import 'package:http/http.dart' as http;
 

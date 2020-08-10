@@ -8,7 +8,6 @@ import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/getCustomers_Service.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:autoassit/Utils/dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 class ViewCustomer extends StatefulWidget {
