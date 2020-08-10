@@ -441,19 +441,18 @@ class _AddCustomerState extends State<AddCustomer> {
   Widget _buildSubmitBtn(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // if (checkNull()) {
-        //   if (validateEmail()) {
-        //     if (validatephone()) {
-        //       postUserData();
-        //     }
-        //   } else {
-        //     errorDialog('ERROR', 'This is not a valid Email !');
-        //   }
-        // } else {
-        //   errorDialog('ERROR', 'You should fill all the fields !');
-        //   print("empty fields");
-        // }
-        successDialog('Customer Registration successfull', 'Click Ok to see !');
+        if (checkNull()) {
+          if (validateEmail()) {
+            if (validatephone()) {
+              postUserData();
+            }
+          } else {
+            errorDialog('ERROR', 'This is not a valid Email !');
+          }
+        } else {
+          errorDialog('ERROR', 'You should fill all the fields !');
+          print("empty fields");
+        }
       },
       child: Container(
         height: 45,
