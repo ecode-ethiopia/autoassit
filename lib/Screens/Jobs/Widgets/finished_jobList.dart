@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:autoassit/Controllers/ApiServices/Job_services/get_jobs_service.dart';
 import 'package:autoassit/Models/jobModel.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/HomePage/homeWidgets/progress_indicator.dart';
@@ -9,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
 
 class FinishedJobList extends StatefulWidget {
   @override
@@ -121,9 +118,11 @@ class _FinishedJobListState extends State<FinishedJobList> {
                     controller: _scrollController,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
+                      var date = DateTime.parse(jobList[index].date);
                       int progressVal = progressCounter(index);
                       return Card(
-                        elevation: 2.0,
+                        // color: Colors.grey[200],
+                        elevation: 5.0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
                         child: GestureDetector(
@@ -137,102 +136,131 @@ class _FinishedJobListState extends State<FinishedJobList> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                            child: ListTile(
-                              leading: Container(
-                                child: Center(
-                                  child: Text(
-                                    "Job No ${jobList[index].jobno}",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 20),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: new BorderRadius.circular(8.0),
-                                    color: colors[rng.nextInt(3)]),
-                                width: 70.0,
-                                height: 80.0,
-                              ),
-                              title: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Icon(Icons.directions_car,
-                                      size: 20,
-                                        color: Color(0xFFef5350),
-                                      ),
-                                       SizedBox(
-                                    width: 5,
-                                  ),
-                                      Text(
-                                        "${jobList[index].vName} ${jobList[index].vNumber}",
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Container(
+                                    child: Center(
+                                      child: Text(
+                                        "Job No ${jobList[index].jobno}",
                                         style: TextStyle(
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 18,
-                                            fontFamily: "SF"),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 20),
+                                        textAlign: TextAlign.center,
                                       ),
-                                    ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius: new BorderRadius.circular(8.0),
+                                        color: colors[rng.nextInt(3)]),
+                                    width: 70.0,
+                                    height: 80.0,
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  title: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Row(
                                         children: [
-                                          Icon(Icons.person_pin,
+                                          Icon(Icons.directions_car,
                                           size: 20,
-                                        color: Color(0xFFef5350),
+                                            color: Color(0xFFef5350),
+                                          ),
+                                           SizedBox(
+                                        width: 5,
                                       ),
-                                       SizedBox(
-                                    width: 5,
-                                  ),
                                           Text(
-                                            "Mr.${jobList[index].cusName}",
+                                            "${jobList[index].vName} ${jobList[index].vNumber}",
                                             style: TextStyle(
-                                                color: Colors.blueAccent,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18,
+                                                fontFamily: "SF"),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),
-                                      Text(
-                                        "${jobList[index].taskCount} Tasks / ${jobList[index].completeTaskCount} Done",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.green[700],
-                                          fontWeight: FontWeight.w500
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Row(
+                                            children: [
+                                              Icon(Icons.person_pin,
+                                              size: 20,
+                                            color: Color(0xFFef5350),
+                                          ),
+                                           SizedBox(
+                                        width: 5,
+                                      ),
+                                              Text(
+                                                "Mr.${jobList[index].cusName}",
+                                                style: TextStyle(
+                                                    color: Colors.blueAccent,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            "${jobList[index].taskCount} Tasks / ${jobList[index].completeTaskCount} Done",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.green[700],
+                                              fontWeight: FontWeight.w500
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      FAProgressBar(
+                                        size: 4,
+                                        currentValue: progressVal,
+                                        progressColor: Colors.green,
+                                        backgroundColor: Color(0xffF0F0F0),
+                                      ),
+                                      SizedBox(
+                                        height: 2,
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  FAProgressBar(
-                                    size: 4,
-                                    currentValue: progressVal,
-                                    progressColor: Colors.green,
-                                    backgroundColor: Color(0xffF0F0F0),
-                                  ),
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(
+                          height: MediaQuery.of(context).size.height /60,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              // color: Colors.amber,
+                              width: MediaQuery.of(context).size.width /2.3,
+                              child: Text("Job Started ${timeAgo.format(date)}",
+                                 style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 15,
+                        ),
+                              )),
+                            Container(
+                              // margin: EdgeInsets.only(left:3),
+                              height: MediaQuery.of(context).size.height /20,
+                              width: MediaQuery.of(context).size.width /3,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/images/completed2.png'),
+                                      fit: BoxFit.fill))),
+                          ],
+                        ),
+                              ],
                             ),
                           ),
                         ),

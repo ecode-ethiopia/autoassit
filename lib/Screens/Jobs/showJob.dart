@@ -107,15 +107,22 @@ class _ShowJobState extends State<ShowJob> {
           ),
           _mainContent(context),
         ]),
-        floatingActionButton: FloatingActionButton.extended(
-    backgroundColor: Color(0xFF0D253F),
-    onPressed: () {
-      print(jobModel.jobno);
-      gotoFinishJob(context);
-    },
-    label: Text('Finish Job'),
-    icon: Icon(Icons.done_all),
-        ),
+        floatingActionButton: jobModel.status == 'finished'? 
+            Image(
+                  image: AssetImage('assets/images/completed.png'),
+                  height: MediaQuery.of(context).size.height / 7,
+                  width: 120.0,
+                )
+                : FloatingActionButton.extended(
+
+              backgroundColor: Color(0xFF0D253F),
+              onPressed: () {
+                print(jobModel.jobno);
+                gotoFinishJob(context);
+              },
+              label: Text('Finish Job'),
+              icon: Icon(Icons.done_all),
+                  ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: buildBottomAppBar(),
       );
