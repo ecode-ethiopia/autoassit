@@ -1,6 +1,7 @@
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/addCustomer_Service.dart';
 import 'package:autoassit/Models/userModel.dart';
 import 'package:autoassit/Providers/AuthProvider.dart';
+import 'package:autoassit/Screens/Customer/view_customer.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -440,18 +441,19 @@ class _AddCustomerState extends State<AddCustomer> {
   Widget _buildSubmitBtn(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (checkNull()) {
-          if (validateEmail()) {
-            if (validatephone()) {
-              postUserData();
-            }
-          } else {
-            errorDialog('ERROR', 'This is not a valid Email !');
-          }
-        } else {
-          errorDialog('ERROR', 'You should fill all the fields !');
-          print("empty fields");
-        }
+        // if (checkNull()) {
+        //   if (validateEmail()) {
+        //     if (validatephone()) {
+        //       postUserData();
+        //     }
+        //   } else {
+        //     errorDialog('ERROR', 'This is not a valid Email !');
+        //   }
+        // } else {
+        //   errorDialog('ERROR', 'You should fill all the fields !');
+        //   print("empty fields");
+        // }
+        successDialog('Customer Registration successfull', 'Click Ok to see !');
       },
       child: Container(
         height: 45,
@@ -490,8 +492,14 @@ class _AddCustomerState extends State<AddCustomer> {
             animType: AnimType.TOPSLIDE,
             tittle: title,
             desc: dec,
-            // btnCancelOnPress: () {},
-            btnOkOnPress: () {})
+            btnOkText: 'ShowList !',
+            btnCancelText: 'Regsiter!',
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {
+              Navigator.of(context).pop();
+               Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ViewCustomer()));
+            })
         .show();
   }
 
