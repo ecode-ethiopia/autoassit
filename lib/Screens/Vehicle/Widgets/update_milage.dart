@@ -34,19 +34,22 @@ class _UpdateMilageState extends State<UpdateMilage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height / 0.2,
+      height: MediaQuery.of(context).size.height / 3,
       padding: const EdgeInsets.all(24.0),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
             Center(
                 child: Text(
               "Update Milage(ODO)",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             )),
             SizedBox(
-              height: 10,
+              height: 30,
             ),
             CustomTextField(
                 labelText: 'Update Milage (ODO)', controller: milage),

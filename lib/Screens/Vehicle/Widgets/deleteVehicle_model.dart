@@ -40,7 +40,9 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
       ),
     ),
-    Text("Are you sure you want to remove ${vehicleModel.make} ${vehicleModel.model} ?"),
+    Text("Are you sure you want to remove ${vehicleModel.make} ${vehicleModel.model} ?",
+      textAlign: TextAlign.center,
+    ),
     SizedBox(
       height: 15,
     ),
@@ -70,7 +72,7 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
         ),
         InkWell(
           onTap: () {
-            startDeleteJVehicle();
+            startDeleteVehicle();
           },
           child: Container(
             height: MediaQuery.of(context).size.width / 10,
@@ -98,7 +100,7 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
       );
   }
 
-  Future<void> startDeleteJVehicle() async {
+  Future<void> startDeleteVehicle() async {
     final body = {
       "_id": vehicleModel.vNumber
       };
