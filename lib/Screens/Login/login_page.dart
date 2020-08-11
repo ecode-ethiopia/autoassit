@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   _divider(),
-                  _facebookButton(),
+                  // _facebookButton(),
                   Expanded(
                     flex: 2,
                     child: SizedBox(),
