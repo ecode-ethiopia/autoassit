@@ -4,6 +4,7 @@ import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Providers/VehicleProvider.dart';
 import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
+import 'package:autoassit/Utils/dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class DeleteVehicle extends StatefulWidget {
 class _DeleteVehicleState extends State<DeleteVehicle> {
 
   Vehicle vehicleModel;
+  bool remove = false;
 
   @override
   void initState() {
@@ -27,89 +29,97 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
     vehicleModel = Provider.of<VehicleProvider>(context, listen: false).vehicleModel;
   }
 
+  Future<bool> onbackpress(){
+ Navigator.pop(context,remove);
+}
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-    Padding(
-      padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-      child: Text(
-        "Delete ?",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+    return  WillPopScope(
+      onWillPop:  onbackpress,
+          child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+        child: Text(
+          "Delete ?",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+        ),
       ),
-    ),
-    Text("Are you sure you want to remove ${vehicleModel.make} ${vehicleModel.model} ?",
-      textAlign: TextAlign.center,
-    ),
-    SizedBox(
-      height: 15,
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.width / 10,
-            width: MediaQuery.of(context).size.width / 4,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+      Text("Are you sure you want to remove ${vehicleModel.make} ${vehicleModel.model} ?",
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.pop(context,remove);
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.width / 10,
+              width: MediaQuery.of(context).size.width / 4,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(50))),
+              child: Center(
+                child: Text(
+                  'No'.toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: Center(
-              child: Text(
-                'No'.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ),
-        InkWell(
-          onTap: () {
-            startDeleteVehicle();
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.width / 10,
-            width: MediaQuery.of(context).size.width / 4,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+          InkWell(
+            onTap: () {
+              startDeleteVehicle();
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.width / 10,
+              width: MediaQuery.of(context).size.width / 4,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(50))),
+              child: Center(
+                child: Text(
+                  'Yes'.toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: Center(
-              child: Text(
-                'Yes'.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-    SizedBox(
-      height: 15,
-    ),
         ],
-      );
+      ),
+      SizedBox(
+        height: 15,
+      ),
+          ],
+        ),
+    );
   }
 
   Future<void> startDeleteVehicle() async {
     final body = {
-      "_id": vehicleModel.vNumber
+      "_id": vehicleModel.vID,
+     "vnumber": vehicleModel.vNumber
       };
 
     print(body);
 
     Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
 
-    final response = await http.post('${URLS.BASE_URL}/job/deleteJob',
+    final response = await http.post('${URLS.BASE_URL}/vehicle/removeVehicle',
         body: jsonEncode(body), headers: requestHeaders);
     print("workingggggggggggg");
     var data = response.body;
@@ -120,17 +130,14 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
 
     try {
       if (response.statusCode == 200) {
-        
-        Provider.of<JobProvider>(context, listen: false).startGetJobs();
-        Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => HomePage()),
-                    (Route<dynamic> route) => false);
-        // successDialog("Done", "Job Deleted !");
+        setState(() {
+          remove = true;
+        });
+        successDialog("Done", "Vehicle removed succefully");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
-        Navigator.of(context).pop();
-        print("job coudlnt create !");
+        Navigator.pop(context,remove);
+        print("vehicle coudlnt remove !");
       }
     } catch (e) {
       print(e);
@@ -146,7 +153,7 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
         desc: dec,
         // btnCancelOnPress: () {},
         btnOkOnPress: () {
-          Navigator.pop(context);
+          Navigator.pop(context,remove);
         }).show();
   }
 }

@@ -62,6 +62,18 @@ class _ViewVehicleState extends State<ViewVehicle> {
     });
   }
 
+  void removeVehicle(bool isRemove,int index) {
+    
+    if(isRemove){
+      print("isremove is $isRemove");
+      setState(() {
+      filteredVehicles.removeAt(index);
+    });
+    }else{
+      print("doesnt hve to update");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -556,11 +568,11 @@ class _ViewVehicleState extends State<ViewVehicle> {
       );
   }
 
-  void goToDelVehicle(index, BuildContext context) {
+  Future goToDelVehicle(index, BuildContext context) async {
     print("clicked edit btn");
     vehicleModel = filteredVehicles[index];
     Provider.of<VehicleProvider>(context, listen: false).vehicleModel = vehicleModel;
-    showDialog(
+    bool remove = await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -572,5 +584,8 @@ class _ViewVehicleState extends State<ViewVehicle> {
           );
         }
       );
+       print("issssssssssss $remove");
+    removeVehicle(remove,index);
   }
+
 }
