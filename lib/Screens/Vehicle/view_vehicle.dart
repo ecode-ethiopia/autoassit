@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:autoassit/Providers/VehicleProvider.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
+import 'package:autoassit/Screens/Vehicle/Widgets/deleteVehicle_model.dart';
+import 'package:autoassit/Screens/Vehicle/Widgets/update_milage.dart';
 import 'package:autoassit/Screens/Vehicle/joblist_by_vehiNo.dart';
 import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
@@ -263,12 +265,12 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                   padding: const EdgeInsets.only(top: 5.0),
                                   child: Row(
                                     children: <Widget>[
-                                      Icon(Icons.phone_iphone,
+                                      Icon(Icons.shutter_speed,
                                           size: 16, color: Color(0xFFf44336)),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 5.0),
                                         child: Text(
-                                            "${filteredVehicles[index].odo}",
+                                            "Milage is ${filteredVehicles[index].odo}Km",
                                             style: TextStyle(
                                                 color: Color(0xFF2e282a),
                                                 fontFamily: 'OpenSans',
@@ -291,7 +293,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                               MediaQuery.of(context).size.width /
                                                   2.4,
                                           child: Text(
-                                              "${filteredVehicles[index].cusName}",
+                                              "Mr. ${filteredVehicles[index].cusName}",
                                               softWrap: true,
                                               style: TextStyle(
                                                   color: Color(0xFF2e282a),
@@ -386,7 +388,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                   builder: (context) => JobListByVehiId()));
                             },
                             child: Text(
-                              "History",
+                              "Job History",
                             ),
                             textColor: Colors.white,
                             color: Colors.indigoAccent,
@@ -406,7 +408,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
 
    Widget _buildInnerTopWidget(index) {
     return Container(
-        color: Color(0xFFf44336),
+        color: Color(0xFFffcd3c),
         alignment: Alignment.center,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -419,11 +421,11 @@ class _ViewVehicleState extends State<ViewVehicle> {
                   buildInnerFields(index, Icons.phone, "Manufactured Year :",
                       filteredVehicles[index].mYear),
                   buildInnerFields(index, Icons.streetview, "Engine Capacity :",
-                      filteredVehicles[index].eCapacity),
+                      "${filteredVehicles[index].eCapacity} cc"),
                   buildInnerFields(index, Icons.location_city, "Description :",
                       filteredVehicles[index].desc),
-                  buildInnerFields(index, Icons.supervised_user_circle,
-                      "Milage :", filteredVehicles[index].odo),
+                  // buildInnerFields(index, Icons.supervised_user_circle,
+                  //     "Milage :", filteredVehicles[index].odo),
                 ],
               ),
             ),             
@@ -437,11 +439,11 @@ class _ViewVehicleState extends State<ViewVehicle> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Icon(icon, size: 18, color: Color(0xFF8BC34A)),
+          Icon(icon, size: 18, color: Color(0xFFf44336)),
           Text(
             title,
             style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600),
           ),
@@ -470,19 +472,20 @@ class _ViewVehicleState extends State<ViewVehicle> {
         color: Color(0xFFef9a9a),
         child: Padding(
           padding: const EdgeInsets.only(bottom:8.0),
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Container(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 10),
                   child: FlatButton(
                     onPressed: () {
                       print("clicked edit btn");
+                      goToUpdateOdo(index,context);
                     },
                     child: Text(
-                      "Edit",
+                      "Update Milage",
                     ),
                     textColor: Colors.white,
                     color: Colors.indigoAccent,
@@ -493,7 +496,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
               Container(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 10),
                   child: FlatButton(
                     onPressed: () {
                       SimpleFoldingCellState foldingCellState =
@@ -502,7 +505,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
                       foldingCellState?.toggleFold();
                     },
                     child: Text(
-                      "Close",
+                      "Close Card",
                     ),
                     textColor: Colors.white,
                     color: Colors.indigoAccent,
@@ -513,13 +516,14 @@ class _ViewVehicleState extends State<ViewVehicle> {
               Container(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 10),
                   child: FlatButton(
                     onPressed: () {
                       print("clicked delete btn");
+                      goToDelVehicle(index,context);
                     },
                     child: Text(
-                      "Delete",
+                      "Delete Vehicle",
                     ),
                     textColor: Colors.white,
                     color: Colors.indigoAccent,
@@ -532,5 +536,41 @@ class _ViewVehicleState extends State<ViewVehicle> {
         ),
       );
     });
+  }
+
+  void goToUpdateOdo(index, BuildContext context) {
+    print("clicked edit btn");
+     vehicleModel = filteredVehicles[index];
+    Provider.of<VehicleProvider>(context, listen: false).vehicleModel = vehicleModel;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+             child: UpdateMilage(),
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.all(Radius.circular(12))
+             ),
+          );
+        }
+      );
+  }
+
+  void goToDelVehicle(index, BuildContext context) {
+    print("clicked edit btn");
+    vehicleModel = filteredVehicles[index];
+    Provider.of<VehicleProvider>(context, listen: false).vehicleModel = vehicleModel;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+             child: DeleteVehicle(),
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.all(Radius.circular(12))
+             ),
+          );
+        }
+      );
   }
 }
