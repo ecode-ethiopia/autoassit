@@ -51,6 +51,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
   bool isEmpty = false;
   String isExpanded = "";
   Customer customerModel;
+  int total = 0;
 
   @override
   void initState() {
@@ -60,6 +61,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
         setState(() {
         customer = customersFromServer;
         filteredCustomers = customer;
+        total = filteredCustomers.length;
         isfetched = false;
       });
       }else{
@@ -146,21 +148,36 @@ class _ViewCustomerState extends State<ViewCustomer> {
                 Center(
                     child: Image.asset(
                   "assets/images/personas.png",
-                  width: 150,
-                  height: 100,
+                  // width: 150,
+                  height: MediaQuery.of(context).size.height / 8.0,
                 )),
                 Padding(
                   padding: const EdgeInsets.only(left: 30.0),
                   child: Center(
-                    child: Text(
-                      'Customer   \n      List.. ',
-                      style: TextStyle(
-                          textBaseline: TextBaseline.alphabetic,
-                          fontFamily: 'Montserrat',
-                          fontSize: 25.0,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Customer List.. ',
+                          style: TextStyle(
+                              textBaseline: TextBaseline.alphabetic,
+                              fontFamily: 'Montserrat',
+                              fontSize: 25.0,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white),
+                        ),
+                         Container(
+                            //  margin: EdgeInsets.only(right: 20),
+                            child: Text(
+                                  "Total Customers - $total",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                      fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -220,6 +237,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
     return Center(
       child: ListView.builder(
         scrollDirection: Axis.vertical,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           return Container(
             margin: EdgeInsets.only(left: 8, right: 8, bottom: 20),
