@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Providers/CustomerProvider.dart';
 import 'package:autoassit/Screens/Customer/Widgets/custom_modal_action_button.dart';
@@ -5,6 +7,7 @@ import 'package:autoassit/Screens/Customer/Widgets/custom_textfield.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class EditCustomer extends StatefulWidget {
   EditCustomer({Key key}) : super(key: key);
@@ -142,9 +145,7 @@ class _EditCustomerState extends State<EditCustomer> {
               onClose: () {
                 Navigator.of(context).pop();
               },
-              onSave: () {
-                // Dialogs.successDialog(
-                //     context, "Done", "Details Updated Successfully !");
+              onSave: () async {
                  final body = {
                     "_id": customerModel.cusid,
                     "fname": _fname.text,
@@ -159,7 +160,48 @@ class _EditCustomerState extends State<EditCustomer> {
                     "ad_l3": _city.text
                   };
 
-                  print(body);
+                       Map<String, String> requestHeaders = {
+                      'Content-Type': 'application/json'
+                    };
+                          final response = await http.post(
+                        '${URLS.BASE_URL}/customer/updateCustomer',
+                        body: jsonEncode(body),
+                        headers: requestHeaders);
+                    print("workingggggggggggg");
+                    var data = response.body;
+                    // print(body);
+                    print(json.decode(data));
+                  
+                    Map<String, dynamic> res_data = jsonDecode(data);
+                     try {
+                      if (response.statusCode == 200) {
+                        setState(() {
+                          customerModel.fName = _fname.text;
+                          customerModel.lName =  _lname.text;
+                          customerModel.email = _email.text;
+                          customerModel.telephone = _tel.text;
+                          customerModel.mobile = _mobile.text;
+                          customerModel.cLimit = _cLimit.text;
+                          customerModel.role = _role;
+                          customerModel.adL1 = _p_code.text;
+                          customerModel.adL2 = _street.text;
+                          customerModel.adL3 = _city.text;
+                        });
+                        // Provider.of<VehicleProvider>(context, listen: false)
+                        //     .updateODO("${milage.text}");
+                  
+                        // print("${vehicleModel.odo}}");
+                  
+                        Dialogs.successDialog(
+                            context, "Done", "details Updated succefully");
+                      } else {
+                        // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                        print("ODO coudlnt update !");
+                      }
+                    }  catch (e) {
+                        print(e);
+                      }
+      
               },
             )
           ],
