@@ -144,7 +144,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
         ),
         Positioned(
             left: 10,
-            top: MediaQuery.of(context).size.height / 30.0,
+            top: MediaQuery.of(context).size.height / 20.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               // mainAxisAlignment: MainAxisAlignment.end,
@@ -189,7 +189,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
             )),
         Positioned(
             left: 20,
-            top: MediaQuery.of(context).size.height / 4.8,
+            top: MediaQuery.of(context).size.height / 5,
             child: Column(children: <Widget>[_buildSearchBar(context)]))
       ],
     );
@@ -199,7 +199,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
     return Container(
       margin: EdgeInsets.only(right: 30.0),
       width: MediaQuery.of(context).size.width / 1.4,
-      height: 45,
+      height: MediaQuery.of(context).size.height / 18,
       // margin: EdgeInsets.only(top: 32),
       padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 2),
       decoration: BoxDecoration(
