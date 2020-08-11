@@ -270,7 +270,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 5.0),
                                         child: Text(
-                                            "Milage is ${filteredVehicles[index].odo}Km",
+                                            "Milage is ${filteredVehicles[index].odo} Km",
                                             style: TextStyle(
                                                 color: Color(0xFF2e282a),
                                                 fontFamily: 'OpenSans',

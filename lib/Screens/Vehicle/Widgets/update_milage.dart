@@ -1,9 +1,14 @@
+import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Providers/VehicleProvider.dart';
 import 'package:autoassit/Screens/Customer/Widgets/custom_modal_action_button.dart';
 import 'package:autoassit/Screens/Customer/Widgets/custom_textfield.dart';
+import 'package:autoassit/Utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class UpdateMilage extends StatefulWidget {
   UpdateMilage({Key key}) : super(key: key);
@@ -54,26 +59,64 @@ class _UpdateMilageState extends State<UpdateMilage> {
             CustomTextField(
                 labelText: 'Update Milage (ODO)', controller: milage),
             SizedBox(
-             height: 10,
-           ),
+              height: 10,
+            ),
             CustomModalActionButton(
               onClose: () {
                 Navigator.of(context).pop();
               },
-              onSave: () {
-                // Dialogs.successDialog(
-                //     context, "Done", "Details Updated Successfully !");
-                 final body = {
-                    "_id": vehicleModel.cusid,
-                    "odo": milage.text
-                  };
-
-                  print(body);
+              onSave: () async {
+               
+                await startUpdateODO(context);
               },
             )
           ],
         ),
       ),
     );
+  }
+
+  Future startUpdateODO(BuildContext context) async {
+    if (milage.text != vehicleModel.odo) {
+      final body = {"_id": vehicleModel.vID, "odo": milage.text};
+    
+      Map<String, String> requestHeaders = {
+        'Content-Type': 'application/json'
+      };
+    
+      final response = await http.post(
+          '${URLS.BASE_URL}/vehicle/updateODO',
+          body: jsonEncode(body),
+          headers: requestHeaders);
+      print("workingggggggggggg");
+      var data = response.body;
+      // print(body);
+      print(json.decode(data));
+    
+      Map<String, dynamic> res_data = jsonDecode(data);
+      try {
+        if (response.statusCode == 200) {
+          setState(() {
+            vehicleModel.odo = milage.text;
+          });
+          Provider.of<VehicleProvider>(context, listen: false)
+              .updateODO("${milage.text}");
+    
+          print("${vehicleModel.odo}}");
+    
+          Dialogs.successDialog(
+              context, "Done", "ODO Updated succefully");
+        } else {
+          // Dialogs.errorDialog(context, "F", "Something went wrong !");
+          print("ODO coudlnt update !");
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print("doesnt hve to update");
+    
+      Navigator.of(context).pop();
+    }
   }
 }

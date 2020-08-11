@@ -13,5 +13,10 @@ class VehicleProvider with ChangeNotifier {
     _vehicleModel = value;
   }
 
+void updateODO(String odo) {
+   _vehicleModel.odo = odo;
+   print("job tot is ${_vehicleModel.odo}");
+    notifyListeners();
+  }
 
 }
