@@ -51,6 +51,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
   bool isfetched = true;
   bool isEmpty = false;
   Vehicle vehicleModel;
+  int total = 0;
 
     @override
   void initState() {
@@ -61,6 +62,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
          setState(() {
         vehicle = vehiclesFromServer;
         filteredVehicles = vehicle;
+        total = filteredVehicles.length;
         isfetched = false;
       });
       }else{
@@ -142,7 +144,7 @@ class _ViewVehicleState extends State<ViewVehicle> {
         ),
         Positioned(
             left: 10,
-            top: MediaQuery.of(context).size.height / 60.0,
+            top: MediaQuery.of(context).size.height / 30.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               // mainAxisAlignment: MainAxisAlignment.end,
@@ -150,21 +152,36 @@ class _ViewVehicleState extends State<ViewVehicle> {
                 Center(
                     child: Image.asset(
                   "assets/images/view.png",
-                  width: 150,
-                  height: 150,
+                  // width: 150,
+                  height: MediaQuery.of(context).size.height / 8.0,
                 )),
                 Padding(
-                  padding: const EdgeInsets.only(left: 30.0),
+                  padding: const EdgeInsets.only(left: 20.0),
                   child: Center(
-                    child: Text(
-                      'Vehicles\nList.. ',
-                      style: TextStyle(
-                          textBaseline: TextBaseline.alphabetic,
-                          fontFamily: 'Montserrat',
-                          fontSize: 25.0,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Vehicles List.. ',
+                          style: TextStyle(
+                              textBaseline: TextBaseline.alphabetic,
+                              fontFamily: 'Montserrat',
+                              fontSize: 25.0,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white),
+                        ),
+                        Container(
+                            //  margin: EdgeInsets.only(right: 20),
+                            child: Text(
+                                  "Total Vehicles - $total",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                      fontWeight: FontWeight.w500, fontSize: 15),
+                                ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
