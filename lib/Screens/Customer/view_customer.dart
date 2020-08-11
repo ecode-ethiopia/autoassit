@@ -61,6 +61,18 @@ class _ViewCustomerState extends State<ViewCustomer> {
     });
   }
 
+  void removeCustomer(bool isRemove,int index) {
+    
+    if(isRemove){
+      print("isremove is $isRemove");
+      setState(() {
+      filteredCustomers.removeAt(index);
+    });
+    }else{
+      print("doesnt hve to update");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -551,11 +563,11 @@ class _ViewCustomerState extends State<ViewCustomer> {
       );
   }
 
-   void goToDelCustomer(index, BuildContext context) {
+   Future<void> goToDelCustomer(index, BuildContext context) async {
     print("clicked edit btn");
      customerModel = filteredCustomers[index];
     Provider.of<CustomerProvider>(context, listen: false).customerModel = customerModel;
-    showDialog(
+    bool remove = await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -567,6 +579,8 @@ class _ViewCustomerState extends State<ViewCustomer> {
           );
         }
       );
+       print("issssssssssss $remove");
+    removeCustomer(remove,index);
   }
 
   Future<dynamic> successDialog(String title, String dec) {

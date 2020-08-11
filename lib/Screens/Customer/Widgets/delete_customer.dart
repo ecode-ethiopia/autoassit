@@ -19,6 +19,7 @@ class DeleteCustomer extends StatefulWidget {
 class _DeleteCustomerState extends State<DeleteCustomer> {
 
   Customer customerModel;
+  bool remove = false;
 
   @override
   void initState() {
@@ -27,75 +28,82 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
     customerModel = Provider.of<CustomerProvider>(context, listen: false).customerModel;
   }
 
+  Future<bool> onbackpress(){
+  Navigator.pop(context,remove);
+}
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-    Padding(
-      padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-      child: Text(
-        "Delete ?",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+    return WillPopScope(
+      onWillPop:  onbackpress,
+          child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+        child: Text(
+          "Delete ?",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+        ),
       ),
-    ),
-    Text("Are you sure you want to remove ${customerModel.fName} ?"),
-    SizedBox(
-      height: 15,
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.width / 10,
-            width: MediaQuery.of(context).size.width / 4,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+      Text("Are you sure you want to remove ${customerModel.fName} ?"),
+      SizedBox(
+        height: 15,
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.pop(context,remove);
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.width / 10,
+              width: MediaQuery.of(context).size.width / 4,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(50))),
+              child: Center(
+                child: Text(
+                  'No'.toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: Center(
-              child: Text(
-                'No'.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ),
-        InkWell(
-          onTap: () {
-            startDeleteJCustomer();
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.width / 10,
-            width: MediaQuery.of(context).size.width / 4,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+          InkWell(
+            onTap: () {
+              startDeleteJCustomer();
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.width / 10,
+              width: MediaQuery.of(context).size.width / 4,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF8E8CD8), Color(0xFF8E8CD8)],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(50))),
+              child: Center(
+                child: Text(
+                  'Yes'.toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: Center(
-              child: Text(
-                'Yes'.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-    SizedBox(
-      height: 15,
-    ),
         ],
-      );
+      ),
+      SizedBox(
+        height: 15,
+      ),
+          ],
+        ),
+    );
   }
 
   Future<void> startDeleteJCustomer() async {
@@ -107,7 +115,7 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
 
     Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
 
-    final response = await http.post('${URLS.BASE_URL}/job/deleteJob',
+    final response = await http.post('${URLS.BASE_URL}/customer/removeCustomer',
         body: jsonEncode(body), headers: requestHeaders);
     print("workingggggggggggg");
     var data = response.body;
@@ -119,16 +127,14 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
     try {
       if (response.statusCode == 200) {
         
-        Provider.of<JobProvider>(context, listen: false).startGetJobs();
-        Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => HomePage()),
-                    (Route<dynamic> route) => false);
-        // successDialog("Done", "Job Deleted !");
+       setState(() {
+          remove = true;
+        });
+        successDialog("Done", "Customer removed succefully");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
-        Navigator.of(context).pop();
-        print("job coudlnt create !");
+       Navigator.pop(context,remove);
+         print("customer coudlnt remove !");
       }
     } catch (e) {
       print(e);
@@ -144,7 +150,7 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
         desc: dec,
         // btnCancelOnPress: () {},
         btnOkOnPress: () {
-          Navigator.pop(context);
+          Navigator.pop(context,remove);
         }).show();
   }
 }
