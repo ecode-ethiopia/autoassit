@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'package:autoassit/Controllers/ApiServices/variables.dart';
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Providers/VehicleProvider.dart';
-import 'package:autoassit/Providers/JobProvider.dart';
-import 'package:autoassit/Screens/HomePage/home.dart';
-import 'package:autoassit/Utils/dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,6 +19,7 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
 
   Vehicle vehicleModel;
   bool remove = false;
+   ProgressDialog pr;
 
   @override
   void initState() {
@@ -35,6 +34,23 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'removing Vehicle...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
+
     return  WillPopScope(
       onWillPop:  onbackpress,
           child: Column(
@@ -110,6 +126,7 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
   }
 
   Future<void> startDeleteVehicle() async {
+    pr.show();
     final body = {
       "_id": vehicleModel.vID,
      "vnumber": vehicleModel.vNumber
@@ -133,9 +150,11 @@ class _DeleteVehicleState extends State<DeleteVehicle> {
         setState(() {
           remove = true;
         });
+        pr.hide();
         successDialog("Done", "Vehicle removed succefully");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
+        pr.hide();
         Navigator.pop(context,remove);
         print("vehicle coudlnt remove !");
       }

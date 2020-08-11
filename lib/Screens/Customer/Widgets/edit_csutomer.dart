@@ -6,6 +6,7 @@ import 'package:autoassit/Screens/Customer/Widgets/custom_modal_action_button.da
 import 'package:autoassit/Screens/Customer/Widgets/custom_textfield.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,6 +32,7 @@ class _EditCustomerState extends State<EditCustomer> {
   List __role = ["Owner", "Driver"];
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   String _currentRole;
+  ProgressDialog pr;
 
   Customer customerModel;
 
@@ -68,6 +70,22 @@ class _EditCustomerState extends State<EditCustomer> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'Updating Details...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return Container(
       height: MediaQuery.of(context).size.height / 0.2,
       padding: const EdgeInsets.all(24.0),
@@ -146,6 +164,7 @@ class _EditCustomerState extends State<EditCustomer> {
                 Navigator.of(context).pop();
               },
               onSave: () async {
+                pr.show();
                  final body = {
                     "_id": customerModel.cusid,
                     "fname": _fname.text,
@@ -191,11 +210,12 @@ class _EditCustomerState extends State<EditCustomer> {
                         //     .updateODO("${milage.text}");
                   
                         // print("${vehicleModel.odo}}");
-                  
+                        pr.hide();
                         Dialogs.successDialog(
                             context, "Done", "details Updated succefully");
                       } else {
                         // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                        pr.hide();
                         print("ODO coudlnt update !");
                       }
                     }  catch (e) {

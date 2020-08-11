@@ -6,6 +6,7 @@ import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +21,7 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
 
   Customer customerModel;
   bool remove = false;
+  ProgressDialog pr;
 
   @override
   void initState() {
@@ -34,6 +36,22 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
 
   @override
   Widget build(BuildContext context) {
+     pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'removing Customer...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return WillPopScope(
       onWillPop:  onbackpress,
           child: Column(
@@ -107,6 +125,7 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
   }
 
   Future<void> startDeleteJCustomer() async {
+    pr.show();
     final body = {
       "_id": customerModel.cusid
       };
@@ -130,9 +149,11 @@ class _DeleteCustomerState extends State<DeleteCustomer> {
        setState(() {
           remove = true;
         });
+        pr.hide();
         successDialog("Done", "Customer removed succefully");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
+        pr.hide();
        Navigator.pop(context,remove);
          print("customer coudlnt remove !");
       }

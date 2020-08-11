@@ -11,6 +11,7 @@ import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:autoassit/Utils/dialogs.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -61,6 +62,7 @@ class _AddTasksModelState extends State<AddTasksModel> {
   final quantityController = TextEditingController();
 
   SharedPreferences login;
+  ProgressDialog pr;
   Job jobModel;
   UserModel userModel;
 
@@ -115,6 +117,22 @@ Future<bool> onbackpress(){
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'addind task..',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return WillPopScope(
       onWillPop:  onbackpress,
           child: Container(
@@ -275,6 +293,7 @@ Future<bool> onbackpress(){
                     onTap: () async {
                          print("working");
                          if(serviceIndexes.isNotEmpty && prodIndexes.isNotEmpty){
+                           pr.show();
                                 final body = {
                             "jobId": jobModel.jobId,
                             "jobNo": jobModel.jobno,
@@ -330,10 +349,12 @@ Future<bool> onbackpress(){
                              
                               // Provider.of<JobProvider>(context, listen: false).startGetJobs();
                               Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
+                              pr.hide();
                                successDialog("Done", "Task added succefully");
                    
                             } else {
                               // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                              pr.hide();
                               print("job coudlnt create !");
                               
                             }

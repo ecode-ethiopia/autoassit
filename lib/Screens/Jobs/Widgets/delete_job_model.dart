@@ -5,6 +5,7 @@ import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Screens/HomePage/home.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,6 +19,7 @@ class DeleteJobBox extends StatefulWidget {
 class _DeleteJobBoxState extends State<DeleteJobBox> {
 
   Job jobModel;
+  ProgressDialog pr;
 
   @override
   void initState() {
@@ -28,6 +30,22 @@ class _DeleteJobBoxState extends State<DeleteJobBox> {
 
   @override
   Widget build(BuildContext context) {
+     pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'deleting job...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -98,6 +116,7 @@ class _DeleteJobBoxState extends State<DeleteJobBox> {
   }
 
   Future<void> startDeleteJob() async {
+    pr.show();
     final body = {
       "_id": jobModel.jobId
       };
@@ -119,6 +138,7 @@ class _DeleteJobBoxState extends State<DeleteJobBox> {
       if (response.statusCode == 200) {
         
         Provider.of<JobProvider>(context, listen: false).startGetJobs();
+        pr.hide();
         Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                         builder: (BuildContext context) => HomePage()),
@@ -126,6 +146,7 @@ class _DeleteJobBoxState extends State<DeleteJobBox> {
         // successDialog("Done", "Job Deleted !");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
+        pr.hide();
         Navigator.of(context).pop();
         print("job coudlnt create !");
       }

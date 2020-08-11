@@ -6,6 +6,7 @@ import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +21,7 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
   String status = "";
   String comTaskCount = "";
   TaskModel taskmodel;
+   ProgressDialog pr;
 
   @override
   void initState() {
@@ -37,6 +39,22 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
 
   @override
   Widget build(BuildContext context) {
+     pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'changing status...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,6 +106,7 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
         InkWell(
           onTap: () async {
             if (status != "" && status != taskmodel.status) {
+              pr.show();
               final body = {
                 "_id": taskmodel.taskId, 
                 "status": "$status",
@@ -127,9 +146,11 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
                   // Provider.of<JobProvider>(context, listen: false).startGetJobs();
                   Provider.of<TaskProvider>(context, listen: false)
                       .startGetTasks(taskmodel.jobId);
+                  pr.hide();
                   successDialog("Done", "Status Updated succefully");
                 } else {
                   // Dialogs.errorDialog(context, "F", "Something went wrong !");
+                  pr.hide();
                   print("job coudlnt create !");
                 }
               } catch (e) {

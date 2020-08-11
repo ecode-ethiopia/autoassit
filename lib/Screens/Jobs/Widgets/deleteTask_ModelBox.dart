@@ -6,6 +6,7 @@ import 'package:autoassit/Providers/JobProvider.dart';
 import 'package:autoassit/Providers/taskProvider.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +21,8 @@ class _DeleteTaskBoxState extends State<DeleteTaskBox> {
   String status = "";
   TaskModel taskmodel;
   Job jobModel;
+  ProgressDialog pr;
+
 
   @override
   void initState() {
@@ -35,6 +38,22 @@ class _DeleteTaskBoxState extends State<DeleteTaskBox> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    pr.style(
+        message: 'removing task...',
+        borderRadius: 10.0,
+        progressWidget: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sending.gif'),
+                    fit: BoxFit.cover))),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(fontFamily: 'Montserrat'));
+
     return WillPopScope(
       onWillPop:  onbackpress,
           child: Column(
@@ -108,6 +127,7 @@ class _DeleteTaskBoxState extends State<DeleteTaskBox> {
   }
 
   Future<void> startDeleteTask() async {
+    pr.show();
     final body = {
       "_id": taskmodel.taskId,
       "jobId": taskmodel.jobId,
@@ -135,9 +155,11 @@ class _DeleteTaskBoxState extends State<DeleteTaskBox> {
         jobModel = Job.fromJson(res_data);
         Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
         Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
+        pr.hide();
         successDialog("Done", "Task Deleted succefully");
       } else {
         // Dialogs.errorDialog(context, "F", "Something went wrong !");
+        pr.hide();
         Navigator.of(context).pop();
         print("job coudlnt create !");
       }
