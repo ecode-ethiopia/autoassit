@@ -4,10 +4,12 @@ import 'package:autoassit/Screens/Customer/Widgets/delete_customer.dart';
 import 'package:autoassit/Screens/Customer/Widgets/edit_csutomer.dart';
 import 'package:autoassit/Screens/Customer/owned_vehicles.dart';
 import 'package:autoassit/Screens/Vehicle/addVehicle.dart';
+import 'package:autoassit/Utils/noResponseWidgets/noCustomersMsg.dart';
 import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/getCustomers_Service.dart';
+import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +48,7 @@ class _ViewCustomerState extends State<ViewCustomer> {
   bool isClicked = false;
   bool isSearchFocused = false;
   bool isfetched = true;
+  bool isEmpty = false;
   String isExpanded = "";
   Customer customerModel;
 
@@ -53,11 +56,19 @@ class _ViewCustomerState extends State<ViewCustomer> {
   void initState() {
     super.initState();
     GetCustomerService.getCustomers().then((customersFromServer) {
-      setState(() {
+      if(customersFromServer.isNotEmpty){
+        setState(() {
         customer = customersFromServer;
         filteredCustomers = customer;
         isfetched = false;
       });
+      }else{
+         setState(() {
+           isEmpty = true;
+           isfetched = false;
+         });
+      }
+      
     });
   }
 
@@ -83,7 +94,18 @@ class _ViewCustomerState extends State<ViewCustomer> {
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
-          child: isfetched? PreLoader() :_buildBody(context),
+          child: isfetched? SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: ListSkeleton(
+                style: SkeletonStyle(
+                    theme: SkeletonTheme.Light,
+                    isShowAvatar: false,
+                    isCircleAvatar: false,
+                    barCount: 3,
+                    // colors: [Color(0xFF8E8CD8), Color(0xFF81C784), Color(0xffFFE082)],
+                    isAnimation: true),
+              ),
+            ): isEmpty? NoCustomersMsg() :_buildBody(context),
         ));
   }
 

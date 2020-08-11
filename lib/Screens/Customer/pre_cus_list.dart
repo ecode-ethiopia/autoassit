@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:autoassit/Screens/Vehicle/addVehicle.dart';
+import 'package:autoassit/Utils/noResponseWidgets/noCustomersMsg.dart';
 import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/getCustomers_Service.dart';
+import 'package:flutter_skeleton/flutter_skeleton.dart';
 
 class PreCustomerList extends StatefulWidget {
   PreCustomerList({Key key}) : super(key: key);
@@ -36,16 +38,25 @@ class _PreCustomerListState extends State<PreCustomerList> {
   final _search = TextEditingController();
   bool isSearchFocused = false;
   bool isfetched = true;
+  bool isEmpty = false;
 
   @override
   void initState() {
     super.initState();
-    GetCustomerService.getCustomers().then((customersFromServer) {
-      setState(() {
+     GetCustomerService.getCustomers().then((customersFromServer) {
+      if(customersFromServer.isNotEmpty){
+        setState(() {
         customer = customersFromServer;
         filteredCustomers = customer;
         isfetched = false;
       });
+      }else{
+         setState(() {
+           isEmpty = true;
+           isfetched = false;
+         });
+      }
+      
     });
   }
 
@@ -59,7 +70,18 @@ class _PreCustomerListState extends State<PreCustomerList> {
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
-          child: isfetched? PreLoader() :_buildBody(context),
+          child: isfetched? SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: ListSkeleton(
+                style: SkeletonStyle(
+                    theme: SkeletonTheme.Light,
+                    isShowAvatar: false,
+                    isCircleAvatar: false,
+                    barCount: 3,
+                    // colors: [Color(0xFF8E8CD8), Color(0xFF81C784), Color(0xffFFE082)],
+                    isAnimation: true),
+              ),
+            ): isEmpty? NoCustomersMsg()  :_buildBody(context),
         ));
   }
 

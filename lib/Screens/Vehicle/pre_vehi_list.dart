@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:autoassit/Controllers/ApiServices/vehicle_services/getVehicles_service.dart';
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
+import 'package:autoassit/Utils/noResponseWidgets/noVehiclesMsg.dart';
 import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreVehicleList extends StatefulWidget {
@@ -37,16 +39,25 @@ class _PreVehicleListState extends State<PreVehicleList> {
   final _search = TextEditingController();
   bool isSearchFocused = false;
   bool isfetched = true;
+  bool isEmpty = false;
 
     @override
   void initState() {
     super.initState();
     GetVehicleService.getVehicles().then((vehiclesFromServer) {
-      setState(() {
+      if(vehiclesFromServer.isNotEmpty){
+         setState(() {
         vehicle = vehiclesFromServer;
         filteredVehicles = vehicle;
         isfetched = false;
       });
+      }else{
+         setState(() {
+           isEmpty = true;
+           isfetched = false;
+         });
+      }
+      
     });
   }
 
@@ -60,7 +71,18 @@ class _PreVehicleListState extends State<PreVehicleList> {
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
-          child: isfetched? PreLoader():_buildBody(context),
+          child: isfetched? SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: ListSkeleton(
+                style: SkeletonStyle(
+                    theme: SkeletonTheme.Light,
+                    isShowAvatar: false,
+                    isCircleAvatar: false,
+                    barCount: 3,
+                    // colors: [Color(0xFF8E8CD8), Color(0xFF81C784), Color(0xffFFE082)],
+                    isAnimation: true),
+              ),
+            ):isEmpty? NoVehiclesMsg():_buildBody(context),
         ));
   }
 
