@@ -202,8 +202,8 @@ class _HomePageState extends State<HomePage>
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Text("On-going jobs",
+              padding: const EdgeInsets.only(left: 25.0),
+              child: Text("In-Progress jobs",
                   style: TextStyle(
                       fontSize: 16.0,
                       fontFamily: 'Montserrat',
@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage>
           ],
         ),
       ),
-      initiallyExpanded: false,
+      initiallyExpanded: true,
       children: <Widget>[
         Container(
                 child: SingleChildScrollView(

@@ -13,6 +13,7 @@ class JobProvider with ChangeNotifier {
 
   Job _jobModel;
   List<Job> _jobList = [];
+  List<Job> _jobListHome = [];
   List<Job> _jobListFinished = [];
   List<Job> _jobListByCusId = [];
   List<Job> _jobListByVehiNo = [];
@@ -22,6 +23,7 @@ class JobProvider with ChangeNotifier {
   Job get jobModel => _jobModel;
 
   List<Job> get listJobs => _jobList;
+  List<Job> get listJobsHome => _jobListHome;
   List<Job> get listJobsFinished => _jobListFinished;
 
   // ignore: unnecessary_getters_setters
@@ -54,6 +56,33 @@ class JobProvider with ChangeNotifier {
          
       notifyListeners();
       return _jobList;
+    }).catchError((onError){
+      print(onError);
+    });
+  }
+
+  Future<void> startGetHomeJobss() async {
+    _jobListHome = [];
+    SharedPreferences initializeToken = await SharedPreferences.getInstance();
+
+    final body = {
+        "token": initializeToken.getString("authtoken")
+      };
+
+      Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
+      
+     String _url = "${URLS.BASE_URL}/job/getOngoingJobs";
+    return http.post(_url,body: jsonEncode(body),headers: requestHeaders).then((res) async {
+      print("getting jobssssssssssssssss ");
+      // print(res.body);
+      var convertedData = convert.jsonDecode(res.body);
+      // print(convertedData);
+        List data = convertedData;
+
+        _jobListHome = data.map((item) => Job.fromJson(item)).toList();
+
+         
+      notifyListeners();
     }).catchError((onError){
       print(onError);
     });

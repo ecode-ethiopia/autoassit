@@ -1,5 +1,5 @@
-import 'package:autoassit/Screens/HomePage/homeWidgets/project_card_tile.dart';
 import 'package:autoassit/Screens/Jobs/Widgets/finished_jobList.dart';
+import 'package:autoassit/Screens/Jobs/Widgets/ongoing_jobList.dart';
 import 'package:flutter/material.dart';
 
 class JobRecords extends StatefulWidget {
@@ -203,7 +203,7 @@ class OngoingJobsContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         color: Colors.white,
       ),
-      child: ProjectCardTile()
+      child: OngoingJobList()
     );
   }
 }

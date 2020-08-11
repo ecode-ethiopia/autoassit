@@ -147,6 +147,7 @@ class _CreateJobState extends State<CreateJob> {
         Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
         print("hutto");
         Provider.of<JobProvider>(context, listen: false).startGetJobs();
+        Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
         Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
         // getTasks();
         // Dialogs.successDialog(context, "Done", "Job Created Successfully !");
