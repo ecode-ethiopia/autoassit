@@ -5,7 +5,6 @@ import 'package:autoassit/Screens/Vehicle/Widgets/deleteVehicle_model.dart';
 import 'package:autoassit/Screens/Vehicle/Widgets/update_milage.dart';
 import 'package:autoassit/Screens/Vehicle/joblist_by_vehiNo.dart';
 import 'package:autoassit/Utils/noResponseWidgets/noVehiclesMsg.dart';
-import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
