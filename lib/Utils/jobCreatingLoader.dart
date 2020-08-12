@@ -8,7 +8,7 @@ class JobLoader extends StatelessWidget {
     return Center(
       child: Container(
          height: MediaQuery.of(context).size.height /4,
-         width: MediaQuery.of(context).size.width /3,
+         width: MediaQuery.of(context).size.width /2,
          decoration: BoxDecoration(
              image: DecorationImage(
                  image: AssetImage('assets/images/macha.gif'),

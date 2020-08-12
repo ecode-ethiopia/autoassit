@@ -95,6 +95,7 @@ class _CreateJobState extends State<CreateJob> {
 
     Provider.of<JobProvider>(context, listen: false)
         .updateTaskCountAndJobtot(taskCount, total);
+        Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
     print("updateddddddddd ${jobModel.labourCharge}-----$total");
   }
 
