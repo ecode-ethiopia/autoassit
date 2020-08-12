@@ -138,6 +138,7 @@ class _DeleteJobBoxState extends State<DeleteJobBox> {
       if (response.statusCode == 200) {
         
         Provider.of<JobProvider>(context, listen: false).startGetJobs();
+        Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
         pr.hide();
         Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(

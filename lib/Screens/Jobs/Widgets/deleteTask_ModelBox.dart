@@ -154,6 +154,7 @@ class _DeleteTaskBoxState extends State<DeleteTaskBox> {
         
         jobModel = Job.fromJson(res_data);
         Provider.of<JobProvider>(context, listen: false).jobModel = jobModel;
+        Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
         Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
         pr.hide();
         successDialog("Done", "Task Deleted succefully");

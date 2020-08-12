@@ -138,6 +138,7 @@ class _FinishedJobBoxState extends State<FinishedJobBox> {
       if (response.statusCode == 200) {
         
         Provider.of<JobProvider>(context, listen: false).startGetJobs();
+        Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
         Provider.of<JobProvider>(context, listen: false).startGetFinishedJobs();
         pr.hide();
         Navigator.of(context).pushAndRemoveUntil(

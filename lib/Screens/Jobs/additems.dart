@@ -348,6 +348,7 @@ Future<bool> onbackpress(){
                               print("$taskCount----$jobtot");
                              
                               // Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                              Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
                               Provider.of<TaskProvider>(context, listen: false).startGetTasks(jobModel.jobId);
                               pr.hide();
                                successDialog("Done", "Task added succefully");

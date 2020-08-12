@@ -144,6 +144,7 @@ class _ChangeTaskStatusState extends State<ChangeTaskStatus> {
                   print("$status----$comTaskCount");
 
                   // Provider.of<JobProvider>(context, listen: false).startGetJobs();
+                  Provider.of<JobProvider>(context, listen: false).startGetHomeJobss();
                   Provider.of<TaskProvider>(context, listen: false)
                       .startGetTasks(taskmodel.jobId);
                   pr.hide();

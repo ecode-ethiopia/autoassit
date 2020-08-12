@@ -472,7 +472,7 @@ class _CreateJobState extends State<CreateJob> {
 
   Widget _jobDetails() {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(15.0,24,15,24),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
