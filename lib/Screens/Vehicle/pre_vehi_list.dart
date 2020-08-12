@@ -3,7 +3,6 @@ import 'package:autoassit/Controllers/ApiServices/vehicle_services/getVehicles_s
 import 'package:autoassit/Models/vehicleModel.dart';
 import 'package:autoassit/Screens/Jobs/create_job.dart';
 import 'package:autoassit/Utils/noResponseWidgets/noVehiclesMsg.dart';
-import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton/flutter_skeleton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,10 +39,12 @@ class _PreVehicleListState extends State<PreVehicleList> {
   bool isSearchFocused = false;
   bool isfetched = true;
   bool isEmpty = false;
+  ScrollController _scrollController;
 
     @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     GetVehicleService.getVehicles().then((vehiclesFromServer) {
       if(vehiclesFromServer.isNotEmpty){
          setState(() {
@@ -88,10 +89,10 @@ class _PreVehicleListState extends State<PreVehicleList> {
 
   Widget _buildTopAppbar(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(190.0),
+      preferredSize: Size.fromHeight(150.0),
       child: Container(
         color: Colors.transparent,
-        height: MediaQuery.of(context).size.height / 0.5,
+        // height: MediaQuery.of(context).size.height / 0.5,
         alignment: Alignment.center,
         child: _buildStack(context),
       ),
@@ -123,8 +124,8 @@ class _PreVehicleListState extends State<PreVehicleList> {
                 Center(
                     child: Image.asset(
                   "assets/images/view.png",
-                  width: 140,
-                  height: 100,
+                 // width: 150,
+                  height: MediaQuery.of(context).size.height / 8.0,
                 )),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0),
@@ -143,19 +144,19 @@ class _PreVehicleListState extends State<PreVehicleList> {
                 ),
               ],
             )),
-        Positioned(
-            left: 20,
-            top: MediaQuery.of(context).size.height / 4.8,
-            child: Column(children: <Widget>[_buildSearchBar(context)]))
+        // Positioned(
+        //     left: 20,
+        //     top: MediaQuery.of(context).size.height / 4.8,
+        //     child: Column(children: <Widget>[_buildSearchBar(context)]))
       ],
     );
   }
 
    Widget _buildSearchBar(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 30.0),
-      width: MediaQuery.of(context).size.width / 1.4,
-      height: 45,
+      width: MediaQuery.of(context).size.width / 1.2,
+      height:  MediaQuery.of(context).size.height / 15,
+      margin: EdgeInsets.only(top: 15),
       // margin: EdgeInsets.only(top: 32),
       padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 2),
       decoration: BoxDecoration(
@@ -194,21 +195,28 @@ class _PreVehicleListState extends State<PreVehicleList> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Center(
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          return Container(
-            child: _getVehiclesList(index,
-                                    'assets/images/owned.png',
-                                    filteredVehicles[index].make +
-                                    " " +
-                                    filteredVehicles[index].model,
-                                    filteredVehicles[index].vNumber,
-                                    filteredVehicles),
-          );
-        },
-        itemCount: filteredVehicles.length,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildSearchBar(context),
+          ListView.builder(
+            scrollDirection: Axis.vertical,
+            controller: _scrollController,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return Container(
+                child: _getVehiclesList(index,
+                                        'assets/images/owned.png',
+                                        filteredVehicles[index].make +
+                                        " " +
+                                        filteredVehicles[index].model,
+                                        filteredVehicles[index].vNumber,
+                                        filteredVehicles),
+              );
+            },
+            itemCount: filteredVehicles.length,
+          ),
+        ],
       ),
     );
   }

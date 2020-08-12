@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:autoassit/Screens/Vehicle/addVehicle.dart';
 import 'package:autoassit/Utils/noResponseWidgets/noCustomersMsg.dart';
-import 'package:autoassit/Utils/pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:autoassit/Models/customerModel.dart';
 import 'package:autoassit/Controllers/ApiServices/Customer_Services/getCustomers_Service.dart';
@@ -39,10 +38,12 @@ class _PreCustomerListState extends State<PreCustomerList> {
   bool isSearchFocused = false;
   bool isfetched = true;
   bool isEmpty = false;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
      GetCustomerService.getCustomers().then((customersFromServer) {
       if(customersFromServer.isNotEmpty){
         setState(() {
@@ -87,10 +88,10 @@ class _PreCustomerListState extends State<PreCustomerList> {
 
   Widget _buildTopAppbar(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(190.0),
+      preferredSize: Size.fromHeight(150.0),
       child: Container(
         color: Colors.transparent,
-        height: MediaQuery.of(context).size.height / 0.5,
+        // height: MediaQuery.of(context).size.height / 0.5,
         alignment: Alignment.center,
         child: _buildStack(context),
       ),
@@ -122,8 +123,8 @@ class _PreCustomerListState extends State<PreCustomerList> {
                 Center(
                     child: Image.asset(
                   "assets/images/personas.png",
-                  width: 140,
-                  height: 100,
+                 // width: 150,
+                  height: MediaQuery.of(context).size.height / 8.0,
                 )),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0),
@@ -142,19 +143,19 @@ class _PreCustomerListState extends State<PreCustomerList> {
                 ),
               ],
             )),
-        Positioned(
-            left: 20,
-            top: MediaQuery.of(context).size.height / 4.8,
-            child: Column(children: <Widget>[_buildSearchBar(context)]))
+        // Positioned(
+        //     left: 20,
+        //     top: MediaQuery.of(context).size.height / 4.8,
+        //     child: Column(children: <Widget>[_buildSearchBar(context)]))
       ],
     );
   }
 
   Widget _buildSearchBar(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 30.0),
-      width: MediaQuery.of(context).size.width / 1.4,
-      height: 45,
+      width: MediaQuery.of(context).size.width / 1.2,
+      height:  MediaQuery.of(context).size.height / 15,
+      margin: EdgeInsets.only(top: 15),
       // margin: EdgeInsets.only(top: 32),
       padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 2),
       decoration: BoxDecoration(
@@ -193,21 +194,28 @@ class _PreCustomerListState extends State<PreCustomerList> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Center(
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          return Container(
-            child: _getCustomerList(index,
-                                    'assets/images/cus_avatar.png',
-                                    filteredCustomers[index].fName +
-                                    " " +
-                                    filteredCustomers[index].lName,
-                                    filteredCustomers[index].cusid,
-                                    filteredCustomers),
-          );
-        },
-        itemCount: filteredCustomers.length,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildSearchBar(context),
+          ListView.builder(
+            scrollDirection: Axis.vertical,
+            controller: _scrollController,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return Container(
+                child: _getCustomerList(index,
+                                        'assets/images/cus_avatar.png',
+                                        filteredCustomers[index].fName +
+                                        " " +
+                                        filteredCustomers[index].lName,
+                                        filteredCustomers[index].cusid,
+                                        filteredCustomers),
+              );
+            },
+            itemCount: filteredCustomers.length,
+          ),
+        ],
       ),
     );
   }
