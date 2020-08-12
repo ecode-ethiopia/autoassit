@@ -115,7 +115,7 @@ class _OwnedVehiclesState extends State<OwnedVehicles> {
         ),
         Positioned(
             left: 10,
-            top: MediaQuery.of(context).size.height / 25.0,
+            top: MediaQuery.of(context).size.height / 22.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               // mainAxisAlignment: MainAxisAlignment.end,
@@ -123,8 +123,8 @@ class _OwnedVehiclesState extends State<OwnedVehicles> {
                 Center(
                     child: Image.asset(
                   "assets/images/owned.png",
-                  width: 150,
-                  height: 100,
+                  // width: 150,
+                  height: MediaQuery.of(context).size.height / 10.0,
                 )),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0,top: 10),

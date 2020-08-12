@@ -52,10 +52,12 @@ class _ViewCustomerState extends State<ViewCustomer> {
   String isExpanded = "";
   Customer customerModel;
   int total = 0;
+   ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     GetCustomerService.getCustomers().then((customersFromServer) {
       if(customersFromServer.isNotEmpty){
         setState(() {
@@ -113,10 +115,10 @@ class _ViewCustomerState extends State<ViewCustomer> {
 
   Widget _buildTopAppbar(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(190.0),
+      preferredSize: Size.fromHeight(150.0),
       child: Container(
         color: Colors.transparent,
-        height: MediaQuery.of(context).size.height / 0.5,
+        // height: MediaQuery.of(context).size.height / 0.5,
         alignment: Alignment.center,
         child: _buildStack(context),
       ),
@@ -183,20 +185,19 @@ class _ViewCustomerState extends State<ViewCustomer> {
                 ),
               ],
             )),
-        Positioned(
-            left: 20,
-            top: MediaQuery.of(context).size.height / 4.8,
-            child: Column(children: <Widget>[_buildSearchBar(context)]))
+        // Positioned(
+        //     left: 20,
+        //     top: MediaQuery.of(context).size.height / 4.8,
+        //     child: Column(children: <Widget>[_buildSearchBar(context)]))
       ],
     );
   }
 
   Widget _buildSearchBar(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 30.0),
-      width: MediaQuery.of(context).size.width / 1.4,
-      height: 45,
-      // margin: EdgeInsets.only(top: 32),
+      width: MediaQuery.of(context).size.width / 1.2,
+      height:  MediaQuery.of(context).size.height / 15,
+      margin: EdgeInsets.only(top: 15),
       padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -234,27 +235,33 @@ class _ViewCustomerState extends State<ViewCustomer> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Center(
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.only(left: 8, right: 8, bottom: 20),
-            child: SimpleFoldingCell(
-                frontWidget: _buildFrontWidget(index),
-                innerTopWidget: _buildInnerTopWidget(index),
-                innerBottomWidget: _buildInnerBottomWidget(index),
-                cellSize: Size(MediaQuery.of(context).size.width / 0.4,
-                    MediaQuery.of(context).size.height / 3.8),
-                // padding: EdgeInsets.only(left:25,top: 25,right: 25),
-                animationDuration: Duration(milliseconds: 300),
-                borderRadius: 30,
-                onOpen: () => print('$index cell opened'),
-                onClose: () => print('$index cell closed')),
-          );
-        },
-        itemCount: filteredCustomers.length,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildSearchBar(context),
+          ListView.builder(
+            scrollDirection: Axis.vertical,
+            controller: _scrollController,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(left: 8, right: 8, bottom: 20),
+                child: SimpleFoldingCell(
+                    frontWidget: _buildFrontWidget(index),
+                    innerTopWidget: _buildInnerTopWidget(index),
+                    innerBottomWidget: _buildInnerBottomWidget(index),
+                    cellSize: Size(MediaQuery.of(context).size.width / 0.4,
+                        MediaQuery.of(context).size.height / 3.8),
+                    // padding: EdgeInsets.only(left:25,top: 25,right: 25),
+                    animationDuration: Duration(milliseconds: 300),
+                    borderRadius: 30,
+                    onOpen: () => print('$index cell opened'),
+                    onClose: () => print('$index cell closed')),
+              );
+            },
+            itemCount: filteredCustomers.length,
+          ),
+        ],
       ),
     );
   }

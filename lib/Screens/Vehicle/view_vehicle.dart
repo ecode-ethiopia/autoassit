@@ -51,11 +51,12 @@ class _ViewVehicleState extends State<ViewVehicle> {
   bool isEmpty = false;
   Vehicle vehicleModel;
   int total = 0;
+   ScrollController _scrollController;
 
     @override
   void initState() {
     super.initState();
-    
+     _scrollController = ScrollController();
     GetVehicleService.getVehicles().then((vehiclesFromServer) {
       if(vehiclesFromServer.isNotEmpty){
          setState(() {
@@ -116,10 +117,10 @@ class _ViewVehicleState extends State<ViewVehicle> {
 
    Widget _buildTopAppbar(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(190.0),
+      preferredSize: Size.fromHeight(150.0),
       child: Container(
         color: Colors.transparent,
-        height: MediaQuery.of(context).size.height/0.5,
+        // height: MediaQuery.of(context).size.height/0.5,
         alignment: Alignment.center,
         child: _buildStack(context),
       ),
@@ -186,19 +187,19 @@ class _ViewVehicleState extends State<ViewVehicle> {
                 ),
               ],
             )),
-        Positioned(
-            left: 20,
-            top: MediaQuery.of(context).size.height / 5,
-            child: Column(children: <Widget>[_buildSearchBar(context)]))
+        // Positioned(
+        //     left: 20,
+        //     top: MediaQuery.of(context).size.height / 5,
+        //     child: Column(children: <Widget>[_buildSearchBar(context)]))
       ],
     );
   }
 
     Widget _buildSearchBar(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 30.0),
-      width: MediaQuery.of(context).size.width / 1.4,
-      height: MediaQuery.of(context).size.height / 18,
+     width: MediaQuery.of(context).size.width / 1.2,
+      height:  MediaQuery.of(context).size.height / 15,
+      margin: EdgeInsets.only(top: 15),
       // margin: EdgeInsets.only(top: 32),
       padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 2),
       decoration: BoxDecoration(
@@ -237,28 +238,35 @@ class _ViewVehicleState extends State<ViewVehicle> {
   }
 
     Widget _buildBody(BuildContext context) {
-    return Center(
-          child: ListView.builder(
+    return SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildSearchBar(context),
+              ListView.builder(
+                controller: _scrollController,
         scrollDirection: Axis.vertical,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.only(left: 8, right: 8, bottom: 20),
-            child: SimpleFoldingCell(
-              frontWidget: _buildFrontWidget(index),
-              innerTopWidget: _buildInnerTopWidget(index),
-              innerBottomWidget: _buildInnerBottomWidget(index),
-              cellSize: Size(MediaQuery.of(context).size.width / 0.4,
-                    MediaQuery.of(context).size.height / 3.8),
-              // padding: EdgeInsets.only(left:25,top: 25,right: 25),
-              animationDuration: Duration(milliseconds: 300),
-                                borderRadius: 30,
-                                onOpen: () => print('$index cell opened'),
-                                onClose: () => print('$index cell closed')
-            ),
-          );
+              return Container(
+                margin: EdgeInsets.only(left: 8, right: 8, bottom: 20),
+                child: SimpleFoldingCell(
+                  frontWidget: _buildFrontWidget(index),
+                  innerTopWidget: _buildInnerTopWidget(index),
+                  innerBottomWidget: _buildInnerBottomWidget(index),
+                  cellSize: Size(MediaQuery.of(context).size.width / 0.4,
+                        MediaQuery.of(context).size.height / 3.8),
+                  // padding: EdgeInsets.only(left:25,top: 25,right: 25),
+                  animationDuration: Duration(milliseconds: 300),
+                                    borderRadius: 30,
+                                    onOpen: () => print('$index cell opened'),
+                                    onClose: () => print('$index cell closed')
+                ),
+              );
         },
         itemCount: filteredVehicles.length,
       ),
+            ],
+          ),
     );
   }
 
